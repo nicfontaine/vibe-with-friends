@@ -1,5 +1,7 @@
 import Head from 'next/head'
 import Image from 'next/image'
+import Link from "next/link"
+import { AiOutlineHome } from "react-icons/ai"
 import styles from '../styles/Home.module.css'
 import { useEffect, useRef, useState } from "react"
 import copyToClipboard from "./mod/copy-to-clipboard"
@@ -90,6 +92,11 @@ export default function Home() {
   return (
 		<>
 		<main style={{textAlign:"center"}}>
+			<Link href="/">
+				<a className="nav-icon-home">
+					<AiOutlineHome color="#633796" size="2rem"/>
+				</a>
+			</Link>
 			<h1>Vibe with Friends</h1>
 
 			<button onClick={urlGenerate}>Create Friend Code</button>
@@ -104,6 +111,7 @@ export default function Home() {
 				<span>Run</span>
 			</div>
 		</main>
+
 		<style jsx>{`
 			main {
 				display: flex;
@@ -111,7 +119,29 @@ export default function Home() {
 				align-items: center;
 				font-size: 20px;
 			}
-			h1rs {
+			.nav-icon-home {
+				position: fixed;
+				left: 1rem;
+				top: 1rem;
+				padding: 0.4rem;
+				border-radius: 8px;
+			}
+			.nav-icon-home:hover {
+				background: rgba(255,255,255,0.1);
+			}
+			.nav-icon-home:hover svg {
+				color: #a56cd5;
+			}
+			.d-flx {
+				display: flex;
+			}
+			.flx-row {
+				flex-direction: row;
+			}
+			.align-center {
+				align-self: center;
+			}
+			h1 {
 				color: #a56cd5;
 			}
 			.flasher-box {
@@ -155,6 +185,7 @@ export default function Home() {
 				color: rgba(255,255,255,0.8);
 			}
 		`}</style>
+
 		</>
   )
 }
