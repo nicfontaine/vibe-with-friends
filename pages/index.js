@@ -2,58 +2,57 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import { useEffect, useRef, useState } from "react"
+import copyToClipboard from "./mod/copy-to-clipboard"
+import sheets from "./mod/sheets"
 export default function Home() {
+
+	const joinGroup = async (id) => {
+		const response = await fetch("/api/group/join", {
+			method: "PUT",
+			headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({id})
+		})
+    const res = await response.json()
+    if (res.err) { console.log(err) }
+	}
+
+	useEffect(() => {
+		let params = new URLSearchParams(window.location.search)
+		const id = params.get("group")
+		console.log(id)
+		// if (id) joinGroup(id)
+	}, [])
 
 	const flasherRef = useRef(null)
 	const urlRef = useRef(null)
 	const [isAdmin, setIsAdmin] = useState(false)
 
-	useEffect(() => {
-	}, [])
-
-	// Notification setup
-	const setup = async () => {
-		let permission = await Notification.requestPermission()
-		if (permission !== "granted") return;
-		const greeting = new Notification("Hi, hello")
-	}
-
-	function copyToClipboard(textToCopy) {
-		if (navigator.clipboard && window.isSecureContext) {
-			return navigator.clipboard.writeText(textToCopy)
-		} else {
-			let textArea = document.createElement("textarea")
-			textArea.value = textToCopy
-			textArea.style.position = "fixed"
-			textArea.style.left = "-999999px"
-			textArea.style.top = "-999999px"
-			document.body.appendChild(textArea)
-			textArea.focus()
-			textArea.select()
-			return new Promise((res, rej) => {
-				document.execCommand('copy') ? res() : rej()
-				textArea.remove()
-			})
-		}
-	}
-
 	const urlGenerate = async (e) => {
+		
 		setIsAdmin(true)
 		e.target.blur()
-		copyToClipboard(location.href)
+		
+		const response = await fetch("/api/group/share", { method: "GET" })
+    const res = await response.json()
+    if (res.err) { console.log(err) }
+		const { id } = res
+
+		let url = new URL(window.location.href)
+		url.searchParams.set("group", id)
+		window.history.replaceState(null, null, url)
+
+		if (navigator.share) {
+			await navigator.share({
+				title: "Viben with Friends",
+				text: "Use this custom link",
+				url
+			})
+		} else {
+			copyToClipboard(url)
+		}
+
 		urlRef.current.innerHTML = "Share URL copied to clipboard"
-	}
-
-	const sheets = {
-		twinkle: [
-			// Twinkle bells
-			100,100, 100,100, 300,100,
-			// Twinkle bells
-			100,100, 100,100, 300,100,
-			// Twinkle little star
-			100,100, 100,100, 100,100, 100,100, 300,100,
-
-		]
+		
 	}
 
 	let isRunning = false
@@ -91,7 +90,7 @@ export default function Home() {
   return (
 		<>
 		<main style={{textAlign:"center"}}>
-			<h2>Vibe with Friends</h2>
+			<h1>Vibe with Friends</h1>
 
 			<button onClick={urlGenerate}>Create Friend Code</button>
 			<div ref={urlRef} className="url-notification">&nbsp;</div>
@@ -112,7 +111,7 @@ export default function Home() {
 				align-items: center;
 				font-size: 20px;
 			}
-			h2 {
+			h1rs {
 				color: #a56cd5;
 			}
 			.flasher-box {
