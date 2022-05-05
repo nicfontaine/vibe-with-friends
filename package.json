@@ -1,11 +1,12 @@
 {
   "name": "viben",
   "version": "0.1.0",
+  "proxy": "http://localhost:3680",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3600",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 3600",
     "lint": "next lint"
   },
   "dependencies": {
@@ -15,10 +16,15 @@
     "next": "12.1.5",
     "react": "18.0.0",
     "react-dom": "18.0.0",
-    "react-icons": "^4.3.1"
+    "react-icons": "^4.3.1",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.17.10",
+    "@babel/node": "^7.17.10",
+    "@babel/preset-env": "^7.17.10",
     "eslint": "8.13.0",
-    "eslint-config-next": "12.1.5"
+    "eslint-config-next": "12.1.5",
+    "nodemon": "^2.0.16"
   }
 }

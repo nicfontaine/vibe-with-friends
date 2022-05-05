@@ -6,41 +6,63 @@ import styles from '../styles/Home.module.css'
 import { useEffect, useRef, useState } from "react"
 import copyToClipboard from "./mod/copy-to-clipboard"
 import sheets from "./mod/sheets"
+
 export default function Home() {
-
-	const joinGroup = async (id) => {
-		const response = await fetch("/api/group/join", {
-			method: "PUT",
-			headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({id})
-		})
-    const res = await response.json()
-    if (res.err) { console.log(err) }
-	}
-
-	useEffect(() => {
-		let params = new URLSearchParams(window.location.search)
-		const id = params.get("group")
-		console.log(id)
-		// if (id) joinGroup(id)
-	}, [])
-
+	
 	const flasherRef = useRef(null)
 	const urlRef = useRef(null)
 	const [isAdmin, setIsAdmin] = useState(false)
+	const [groupID, setGroupID] = useState("")
+	const [userID, setUserId] = useState("")
 
-	const urlGenerate = async (e) => {
+	useEffect(() => {
+
+		console.log("-- Loaded --")
+		
+		let _uid = localStorage.getItem("userID")
+		setUserId(_uid)
+		console.log(`userID: ${userID}`)
+
+		let params = new URLSearchParams(window.location.search)
+		const _gid = params.get("group")
+		setGroupID(_gid)
+		console.log(`groupID: ${groupID}`)
+		console.log(`isAdmin: ${isAdmin}`)
+		if (_gid && !isAdmin) joinGroup(_gid, _uid)
+
+	}, [])
+
+	useEffect(() => {
+		localStorage.setItem("userID", userID)
+	}, [userID])
+
+	const joinGroup = async (group, user) => {
+		const response = await fetch("/api/group/join", {
+			method: "POST",
+			headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({group, user})
+		})
+    const res = await response.json()
+    if (res.err) console.log(err)
+		if (res.group === null) {
+			confirm("Friend code no longer valid")
+			window.location = "/"
+		}
+		if (res.user) setUserId(res.user)
+	}
+
+	const createGroup = async (e) => {
 		
 		setIsAdmin(true)
 		e.target.blur()
 		
-		const response = await fetch("/api/group/share", { method: "GET" })
+		const response = await fetch("/api/group/create", { method: "POST" })
     const res = await response.json()
     if (res.err) { console.log(err) }
-		const { id } = res
+		const { group } = res
 
 		let url = new URL(window.location.href)
-		url.searchParams.set("group", id)
+		url.searchParams.set("group", group)
 		window.history.replaceState(null, null, url)
 
 		if (navigator.share) {
@@ -99,7 +121,7 @@ export default function Home() {
 			</Link>
 			<h1>Vibe with Friends</h1>
 
-			<button onClick={urlGenerate}>Create Friend Code</button>
+			<button onClick={createGroup}>Create Friend Code</button>
 			<div ref={urlRef} className="url-notification">&nbsp;</div>
 
 			<div
