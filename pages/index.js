@@ -11,7 +11,8 @@ export default function Home() {
 	
 	const flasherRef = useRef(null)
 	const urlRef = useRef(null)
-	const [isAdmin, setIsAdmin] = useState(false)
+
+	const [isOwner, setisOwner] = useState(false)
 	const [groupID, setGroupID] = useState("")
 	const [userID, setUserId] = useState("")
 
@@ -19,16 +20,28 @@ export default function Home() {
 
 		console.log("-- Loaded --")
 		
-		let _uid = localStorage.getItem("userID")
+		const _uid = localStorage.getItem("userID")
 		setUserId(_uid)
-		console.log(`userID: ${userID}`)
+		console.log(`userID: ${_uid}`)
+		const _owner = JSON.parse(localStorage.getItem("isOwner"))
+		setisOwner(_owner || false)
 
 		let params = new URLSearchParams(window.location.search)
 		const _gid = params.get("group")
+		const _gidls = localStorage.getItem("groupID")
 		setGroupID(_gid)
-		console.log(`groupID: ${groupID}`)
-		console.log(`isAdmin: ${isAdmin}`)
-		if (_gid && !isAdmin) joinGroup(_gid, _uid)
+		console.log(`groupID: ${_gid}`)
+		console.log(`isOwner: ${_owner}`)
+
+		if (_gid === _gidls) {
+			console.log("Already joined")
+		}
+		if (_gid && _gid.length && _owner === false) {
+			// Still try to join, even if already joined. To check in case group doesn't exist anymore
+			joinGroup(_gid, _uid)
+		} else if (_gid && _gid.length) {
+			// window.location = "/"
+		}
 
 	}, [])
 
@@ -36,24 +49,37 @@ export default function Home() {
 		localStorage.setItem("userID", userID)
 	}, [userID])
 
+	useEffect(() => {
+		localStorage.setItem("isOwner", isOwner)
+	}, [isOwner])
+
+	useEffect(() => {
+		localStorage.setItem("groupID", groupID)
+	}, [groupID])
+
 	const joinGroup = async (group, user) => {
+		
+		console.log("joinGroup()")
+		setisOwner(false)
 		const response = await fetch("/api/group/join", {
 			method: "POST",
 			headers: {"Content-Type": "application/json"},
       body: JSON.stringify({group, user})
 		})
     const res = await response.json()
+
     if (res.err) console.log(err)
 		if (res.group === null) {
 			confirm("Friend code no longer valid")
 			window.location = "/"
 		}
 		if (res.user) setUserId(res.user)
+
 	}
 
 	const createGroup = async (e) => {
 		
-		setIsAdmin(true)
+		setisOwner(true)
 		e.target.blur()
 		
 		const response = await fetch("/api/group/create", { method: "POST" })
@@ -113,21 +139,29 @@ export default function Home() {
 
   return (
 		<>
-		<main style={{textAlign:"center"}}>
-			<Link href="/">
-				<a className="nav-icon-home">
-					<AiOutlineHome color="#633796" size="2rem"/>
-				</a>
-			</Link>
+		
+		<nav className="nav-main">
+			<div className="home-container">
+				<Link href="/">
+					<a className="nav-icon-home">
+						<AiOutlineHome color="#633796" size="2.7rem"/>
+					</a>
+				</Link>
+			</div>
 			<h1>Vibe with Friends</h1>
+			<div className="button-container">
+				<button onClick={createGroup}>Create Group</button>
+			</div>
+		</nav>
 
-			<button onClick={createGroup}>Create Friend Code</button>
+		<main style={{textAlign:"center"}}>
+
 			<div ref={urlRef} className="url-notification">&nbsp;</div>
 
 			<div
 				ref={flasherRef}
 				className={`flasher-box
-					${isAdmin ? "show" : ""}`}
+					${isOwner && groupID ? "show" : ""}`}
 				onClick={() => player(sheets.twinkle, 2)}
 			>
 				<span>Run</span>
@@ -135,77 +169,6 @@ export default function Home() {
 		</main>
 
 		<style jsx>{`
-			main {
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				font-size: 20px;
-			}
-			.nav-icon-home {
-				position: fixed;
-				left: 1rem;
-				top: 1rem;
-				padding: 0.4rem;
-				border-radius: 8px;
-			}
-			.nav-icon-home:hover {
-				background: rgba(255,255,255,0.1);
-			}
-			.nav-icon-home:hover svg {
-				color: #a56cd5;
-			}
-			.d-flx {
-				display: flex;
-			}
-			.flx-row {
-				flex-direction: row;
-			}
-			.align-center {
-				align-self: center;
-			}
-			h1 {
-				color: #a56cd5;
-			}
-			.flasher-box {
-				width: 200px;
-				height: 200px;
-				background: rgba(255,255,255,0.2);
-				color: rgba(255,255,255,0.8);
-				margin-top: 1.5rem;
-				border-radius: 10px;
-				display: flex;
-				align-items: center;
-				justify-content: space-around;
-				cursor: pointer;
-				font-weight: 600;
-				font-size: 2rem;
-				opacity: 0;
-				visibility: hidden;
-				transition: opacity 1s;
-				transition-delay: 0.75s;
-			}
-			.flasher-box.show {
-				visibility: visible;
-				opacity: 1;
-			}
-			button {
-				cursor: pointer;
-				font-size: 1.2rem;
-				padding: 0.7rem 1.3rem;
-				border-radius: 0.5rem;
-				background: transparent;
-				border: 2px solid rgba(255,255,255,0.4);
-				background: rgba(0,0,0,0.2);
-				color: #fff;
-			}
-			button:hover {
-				background: #a56cd5;
-				border-color: transparent;
-			}
-			.url-notification {
-				margin-top: 1rem;
-				color: rgba(255,255,255,0.8);
-			}
 		`}</style>
 
 		</>

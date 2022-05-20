@@ -22,22 +22,23 @@ app.post("/api/group/create", (req, res) => {
     owner: res,
     clients: {}
   }
-  console.log(`New group created: ${group}`)
+  console.log(`[/api/group/create] New group created: ${group}`)
   res.status(200).json({ group })
 })
 
 app.post("/api/group/join", (req, res) => {
-  console.log("/api/group/join")
   const { group } = req.body
   if (!(group in store)) {
+    console.log(`[/api/group/join] Group not found: ${group}`)
     return res.status(500).json({group: null})
   }
   let user = req.body.user || uuidv4()
   if (!([user] in store[group].clients)) {
     store[group].clients[user] = res
-    console.log(`User added to group: ${group}`)
+    console.log(`[/api/group/join] User added to group: ${group} (${Object.keys(store[group].clients).length} clients)`)
+  } else {
+    console.log(`[/api/group/join] User already in group: ${group} (${Object.keys(store[group].clients).length} clients)`)
   }
-  console.log(`${group}: ${Object.keys(store[group].clients).length} clients`)
   res.status(200).json({ group, user })
 })
 
