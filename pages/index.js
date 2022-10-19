@@ -12,74 +12,43 @@ export default function Home() {
 	const flasherRef = useRef(null)
 	const urlRef = useRef(null)
 
-	const [isOwner, setisOwner] = useState(false)
+	const [isOwner, setIsOwner] = useState(false)
 	const [groupID, setGroupID] = useState("")
 	const [userID, setUserId] = useState("")
 
 	useEffect(() => {
-
-		console.log("-- Loaded --")
-		
 		const _uid = localStorage.getItem("userID")
 		setUserId(_uid)
-		console.log(`userID: ${_uid}`)
 		const _owner = JSON.parse(localStorage.getItem("isOwner"))
-		setisOwner(_owner || false)
-
+		setIsOwner(_owner || false)
 		let params = new URLSearchParams(window.location.search)
 		const _gid = params.get("group")
-		const _gidls = localStorage.getItem("groupID")
 		setGroupID(_gid)
-		console.log(`groupID: ${_gid}`)
-		console.log(`isOwner: ${_owner}`)
 
-		if (_gid === _gidls) {
-			console.log("Already joined")
-		}
+		console.log(`[-- LOAD DATA --] \nuserID: ${_uid}, groupID: ${_gid}, isOwner: ${_owner}`)
+
 		if (_gid && _gid.length && _owner === false) {
 			// Still try to join, even if already joined. To check in case group doesn't exist anymore
 			joinGroup(_gid, _uid)
 		} else if (_gid && _gid.length) {
-			// window.location = "/"
+			// NOTE: Refreshing owner, is websocket still open?
 		}
 
 	}, [])
 
 	useEffect(() => {
+		console.log(`Update userID: ${userID}`)
 		localStorage.setItem("userID", userID)
 	}, [userID])
 
 	useEffect(() => {
+		console.log(`Update isOwner: ${isOwner}`)
 		localStorage.setItem("isOwner", isOwner)
 	}, [isOwner])
 
-	useEffect(() => {
-		localStorage.setItem("groupID", groupID)
-	}, [groupID])
-
-	const joinGroup = async (group, user) => {
-		
-		console.log("joinGroup()")
-		setisOwner(false)
-		const response = await fetch("/api/group/join", {
-			method: "POST",
-			headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({group, user})
-		})
-    const res = await response.json()
-
-    if (res.err) console.log(err)
-		if (res.group === null) {
-			confirm("Friend code no longer valid")
-			window.location = "/"
-		}
-		if (res.user) setUserId(res.user)
-
-	}
-
 	const createGroup = async (e) => {
 		
-		setisOwner(true)
+		setIsOwner(true)
 		e.target.blur()
 		
 		const response = await fetch("/api/group/create", { method: "POST" })
@@ -87,6 +56,7 @@ export default function Home() {
     if (res.err) { console.log(err) }
 		const { group } = res
 
+		setGroupID(group)
 		let url = new URL(window.location.href)
 		url.searchParams.set("group", group)
 		window.history.replaceState(null, null, url)
@@ -103,6 +73,31 @@ export default function Home() {
 
 		urlRef.current.innerHTML = "Share URL copied to clipboard"
 		
+	}
+
+	const joinGroup = async (group, user) => {
+		
+		console.log("joinGroup()")
+		setIsOwner(false)
+
+		let payload = {}
+		if (group) payload.group = group
+		if (user) payload.user = user
+
+		const response = await fetch("/api/group/join", {
+			method: "POST",
+			headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(payload)
+		})
+    const res = await response.json()
+
+    if (res.err) console.log(err)
+		if (res.group === null) {
+			confirm("Friend code no longer valid")
+			window.location = "/"
+		}
+		if (res.user) setUserId(res.user)
+
 	}
 
 	let isRunning = false

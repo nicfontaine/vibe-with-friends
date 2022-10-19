@@ -9,6 +9,7 @@ app.use(express.json())
 var store = {}
 
 app.post("/api/group/create", (req, res) => {
+
   console.log("/api/group/create")
   let _gid = namor.generate({words: 3, saltLength: 0}).split("-")
   // NOTE: can probably simplify
@@ -18,20 +19,25 @@ app.post("/api/group/create", (req, res) => {
       group += _gid[i].replace(_gid[i][0], _gid[i][0].toUpperCase())
     }
   }
+
   store[group] = {
     owner: res,
     clients: {}
   }
+
   console.log(`[/api/group/create] New group created: ${group}`)
   res.status(200).json({ group })
+  
 })
 
 app.post("/api/group/join", (req, res) => {
+
   const { group } = req.body
   if (!(group in store)) {
     console.log(`[/api/group/join] Group not found: ${group}`)
     return res.status(500).json({group: null})
   }
+
   let user = req.body.user || uuidv4()
   if (!([user] in store[group].clients)) {
     store[group].clients[user] = res
@@ -39,7 +45,9 @@ app.post("/api/group/join", (req, res) => {
   } else {
     console.log(`[/api/group/join] User already in group: ${group} (${Object.keys(store[group].clients).length} clients)`)
   }
+
   res.status(200).json({ group, user })
+
 })
 
 app.get("*", (req, res) => {

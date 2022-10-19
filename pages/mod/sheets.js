@@ -1,4 +1,4 @@
-const sheets = {
+export default {
   twinkle: [
     // Twinkle bells
     100,100, 100,100, 300,100,
@@ -9,5 +9,3 @@ const sheets = {
 
   ]
 }
-
-export default sheets
