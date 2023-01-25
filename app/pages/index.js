@@ -4,8 +4,8 @@ import Link from "next/link"
 import { AiOutlineHome } from "react-icons/ai"
 import styles from '../styles/Home.module.css'
 import { useEffect, useRef, useState } from "react"
-import copyToClipboard from "./mod/copy-to-clipboard"
-import sheets from "./mod/sheets"
+import copyToClipboard from "./util/copy-to-clipboard"
+import sheets from "./util/sheets"
 
 export default function Home() {
 	
