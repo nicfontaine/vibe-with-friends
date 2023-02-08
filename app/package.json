@@ -1,5 +1,5 @@
 {
-  "name": "viben",
+  "name": "vibe-with-friends",
   "version": "0.1.0",
   "proxy": "http://localhost:3680",
   "private": true,
@@ -23,8 +23,13 @@
     "@babel/core": "^7.17.10",
     "@babel/node": "^7.17.10",
     "@babel/preset-env": "^7.17.10",
-    "eslint": "8.13.0",
+    "eslint": "^8.32.0",
     "eslint-config-next": "12.1.5",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-n": "^15.6.1",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-react": "^7.32.1",
     "nodemon": "^2.0.16"
   }
 }

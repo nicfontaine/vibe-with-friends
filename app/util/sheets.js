@@ -1,11 +1,11 @@
 export default {
-  twinkle: [
-    // Twinkle bells
+  jingle: [
+    // Jingle bells
     100,100, 100,100, 300,100,
-    // Twinkle bells
+    // Jingle bells
     100,100, 100,100, 300,100,
-    // Twinkle little star
+    // Jingle all the way
     100,100, 100,100, 100,100, 100,100, 300,100,
 
   ]
-}
+};

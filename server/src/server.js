@@ -6,11 +6,13 @@ const PORT = process.env.PORT || 3680;
 const app = express();
 app.use(express.json());
 
+// TODO: Replace with DB
 var store = {};
 
 app.post("/api/group/create", (req, res) => {
 
   console.log("/api/group/create");
+
   // Convert "one-two-three" to "oneTwoThree"
   let _gid = namor.generate({words: 3, saltLength: 0}).split("-")
   let group = _gid.shift() + _gid.map((g) => g[0].toUpperCase() + g.slice(1)).join("");
@@ -21,19 +23,24 @@ app.post("/api/group/create", (req, res) => {
   };
 
   console.log(`[/api/group/create] New group created: ${group}`);
-  res.status(200).json({ group });
+  res.status(200).json({
+    group,
+    numberConnected: Object.keys(store[group].clients).length,
+  });
   
 });
 
 app.post("/api/group/join", (req, res) => {
 
   const { group } = req.body;
+
   if (!(group in store)) {
     console.log(`[/api/group/join] Group not found: ${group}`);
     return res.status(500).json({group: null});
   }
 
   let user = req.body.user || uuidv4();
+
   if (!([user] in store[group].clients)) {
     store[group].clients[user] = res;
     console.log(`[/api/group/join] User added to group: ${group} (${Object.keys(store[group].clients).length} clients)`);
