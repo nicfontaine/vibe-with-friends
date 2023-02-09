@@ -1,19 +1,18 @@
 module.exports = {
 	env: {
-		browser: true,
-		es2021: true
+		node: true,
+		es2021: true,
 	},
-	extends: 'standard',
-	overrides: [
-	],
+	extends: ["standard", "prettier"],
+	overrides: [],
 	parserOptions: {
-		ecmaVersion: 'latest',
-		sourceType: 'module'
+		ecmaVersion: "latest",
+		sourceType: "module",
 	},
 	rules: {
 		indent: [2, "tab"],
 		"no-tabs": 0,
 		quotes: "off",
-		allowEmptyReject: 1
-	}
-}
+		allowEmptyReject: 1,
+	},
+};

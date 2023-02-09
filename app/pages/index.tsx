@@ -1,99 +1,102 @@
-import Head from 'next/head';
-import Image from 'next/image';
-import { MouseEvent } from 'react';
-import { AiOutlineHome, AiOutlineUser } from 'react-icons/ai';
-import { HiOutlineUserGroup } from 'react-icons/hi';
-// import styles from '../styles/Home.module.css';
-import { useEffect, useRef, useState } from 'react';
-import PlayerBox from '../components/PlayerBox';
-import BtnCreateGroup from '../components/BtnCreateGroup';
-import joinGroup from '../util/join-group';
+import { MouseEvent } from "react";
+import { AiOutlineHome, AiOutlineUser } from "react-icons/ai";
+import { HiOutlineUserGroup } from "react-icons/hi";
+import { useEffect, useRef, useState } from "react";
+import PlayerBox from "../components/PlayerBox";
+import BtnCreateGroup from "../components/BtnCreateGroup";
+import joinGroup from "../util/join-group";
+import { setIsOwner, setUserID } from "../feature/userSlice";
+import { useAppDispatch, useAppSelector } from "../app/store";
+import { batch } from "react-redux";
+import { setGroupID } from "../feature/groupSlice";
 
 const Home = function () {
-	const urlRef = useRef<HTMLDivElement>(null);
+	const dispatch = useAppDispatch();
+	const statusRef = useRef<HTMLDivElement>(null);
 
-	const [isOwner, setIsOwner] = useState(false);
-	const [groupID, setGroupID] = useState('');
-	const [userID, setUserId] = useState('');
-	const [urlMsg, setUrlMsg] = useState('');
+	const [statusMsg, setStatusMsg] = useState("");
+
+	const user = useAppSelector((state) => state.user);
+	const group = useAppSelector((state) => state.group);
 
 	const joinGroupOnLoad = async function (
 		group: string,
-		user: string
+		user: string,
 	): Promise<void> {
-		setIsOwner(false);
+		dispatch(setIsOwner(false));
 		const _u = await joinGroup(group, user);
-		if (_u !== undefined) setUserId(_u);
+		if (_u !== undefined) {
+			dispatch(setUserID(_u));
+		}
 	};
 
 	useEffect(() => {
-		// TODO: Check userID and isOwner values from Redux store
-		// setIsOwner(_owner || false);
+		setStatusMsg("");
 		const params = new URLSearchParams(window.location.search);
-		const _gid = params.get('group') || '';
-		setGroupID(_gid);
-
+		const _gid = params.get("group") || "";
 		console.log(
-			`[-- LOAD DATA --]\nuserID: ${userID}\ngroupID: ${_gid}\nisOwner: ${isOwner}`
+			`[-- LOAD DATA --]\nuser.id: ${user.id}\ngroupID: ${_gid}\nisOwner: ${user.isOwner}`,
 		);
-
-		if (_gid.length && isOwner === false) {
+		if (_gid.length && user.isOwner === false) {
 			// Still try to join, even if already joined. To check in case group doesn't exist anymore
-			joinGroupOnLoad(_gid, userID);
+			dispatch(setGroupID(_gid));
+			joinGroupOnLoad(_gid, user.id);
 		} else if (_gid.length) {
 			// NOTE: Refreshing owner, is websocket still open?
 		}
 	}, []);
 
-	const handleGoHome = function (e: MouseEvent<HTMLButtonElement>): void {
-		setGroupID('');
-		setIsOwner(false);
-		window.history.replaceState(null, '', '/');
+	const handleButtonHome = function (e: MouseEvent<HTMLButtonElement>): void {
+		batch(() => {
+			dispatch(setGroupID(""));
+			dispatch(setIsOwner(false));
+		});
+		window.history.replaceState(null, "", "/");
 	};
 
-	const handleUserButton = function (e: MouseEvent<HTMLButtonElement>): void {};
+	const handleButtonUser = function (e: MouseEvent<HTMLButtonElement>): void {
+		//
+	};
 
 	return (
 		<>
 			<nav className="nav-main">
 				<div className="home-container">
-					<button onClick={handleGoHome} className="nav-btn nav-icon-home">
+					<button onClick={handleButtonHome} className="nav-btn nav-icon-home">
 						<AiOutlineHome color="#633796" size="2.7rem" />
 					</button>
 				</div>
 				<h1 className="heading">{process.env.NEXT_PUBLIC_APP_NAME}</h1>
 				<div className="button-container">
-					<button onClick={handleUserButton} className="nav-btn nav-icon-user">
+					<button onClick={handleButtonUser} className="nav-btn nav-icon-user">
 						<AiOutlineUser color="#633796" size="2.7rem" />
 					</button>
 				</div>
 			</nav>
 
-			<main style={{ textAlign: 'center' }}>
-				{groupID && (
+			<main style={{ textAlign: "center" }}>
+				{group.id && (
 					<div className="d-flx">
 						<span className="icon mg-r-4 d-flx flx-items-ctr">
 							<HiOutlineUserGroup size="35"></HiOutlineUserGroup>
 						</span>
 						<code className="text-code pd-a-2 pd-r-3 pd-l-3 rnd-8">
-							{groupID}
+							{group.id}
 						</code>
 					</div>
 				)}
+
 				<div className="button-container">
-					{!groupID.length && (
-						<BtnCreateGroup
-							setIsOwner={setIsOwner}
-							setGroupID={setGroupID}
-							setUrlMsg={setUrlMsg}
-						></BtnCreateGroup>
+					{!group.id.length && (
+						<BtnCreateGroup setStatusMsg={setStatusMsg}></BtnCreateGroup>
 					)}
 				</div>
-				<div ref={urlRef} className="url-notification">
-					{urlMsg}
-				</div>
 
-				<PlayerBox isOwner={isOwner} groupID={groupID}></PlayerBox>
+				<PlayerBox isOwner={user.isOwner} groupID={group.id}></PlayerBox>
+
+				<div ref={statusRef} className="status-msg">
+					{statusMsg}
+				</div>
 			</main>
 		</>
 	);

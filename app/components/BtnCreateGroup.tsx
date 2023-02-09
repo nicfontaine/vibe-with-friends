@@ -1,54 +1,27 @@
-import { MouseEvent } from 'react';
-import copyToClipboard from '../util/copy-to-clipboard';
+import { MouseEvent } from "react";
+import createGroup from "../util/create-group";
+import { useAppDispatch, useAppSelector } from "../app/store";
+import { setIsOwner, setUserID } from "../feature/userSlice";
+import { setGroupID } from "../feature/groupSlice";
 
 interface IProps {
-	setIsOwner: (val: boolean) => void;
-	setGroupID: (val: string) => void;
-	setUrlMsg: (val: string) => void;
+	setStatusMsg: (val: string) => void;
 }
 
-const BtnCreateGroup = function ({
-	setIsOwner,
-	setGroupID,
-	setUrlMsg,
-}: IProps) {
-	// Create new group, as owner
-	const createGroup = async (
-		e: MouseEvent<HTMLButtonElement>
-	): Promise<void> => {
-		setIsOwner(true);
-		if (e.target !== null) {
-			(e.target as HTMLButtonElement).blur();
-		}
+const BtnCreateGroup = function ({ setStatusMsg }: IProps) {
+	const dispatch = useAppDispatch();
+	const user = useAppSelector((state) => state.user);
 
-		const response = await fetch('/api/group/create', { method: 'POST' });
-		const res = await response.json();
-		if (res.err) {
-			console.log(res.err);
-		}
-		const { group, numberConnected } = res;
-		console.log(`numberConnected: ${numberConnected}`);
-
-		setGroupID(group);
-		const url = new URL(window.location.href);
-		const urlStr = url.toString();
-		url.searchParams.set('group', group);
-		window.history.replaceState(null, '', url);
-
-		if (navigator.share) {
-			await navigator.share({
-				title: process.env.NEXT_PUBLIC_APP_NAME || 'App',
-				text: 'Use this custom link',
-				url: urlStr,
-			});
-		} else {
-			copyToClipboard(urlStr);
-		}
-		setUrlMsg('Share URL copied to clipboard');
+	const handleCreateGroup = async function (e: MouseEvent<HTMLButtonElement>) {
+		dispatch(setIsOwner(true));
+		const res = await createGroup(e, user.id);
+		dispatch(setGroupID(res.groupID));
+		dispatch(setUserID(res.userID));
+		setStatusMsg(res.msg);
 	};
 
 	return (
-		<button onClick={createGroup} className="btn-border">
+		<button onClick={handleCreateGroup} className="btn-border">
 			Create Group
 		</button>
 	);

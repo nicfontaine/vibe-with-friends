@@ -9,6 +9,7 @@ body {
 html {
 	background: #241338;
 	background: linear-gradient(10deg, #371842, #241338);
+	background: linear-gradient(10deg, #2f1435, #1f1031);
 	min-height: 100vh;
 	color: #eee;
 }
@@ -49,11 +50,15 @@ button {
 	padding: 0.7rem 1rem;
 	border-radius: 0.5rem;
 	background: transparent;
-	color: #fff;
+	color: rgba(255, 255, 255, 0.85);
+	font-weight: 600;
 }
 button:hover {
 	border-color: transparent;
 	background: #a56cd5;
+	color: #fff;
+	color: #351b54;
+	box-shadow: 0 8px 25px rgba(9, 34, 47, 0.8);
 }
 .button-container button {
 	cursor: pointer;
@@ -62,7 +67,7 @@ button:hover {
 }
 .btn-border {
 	background: rgba(0, 0, 0, 0.2);
-	border: 2px solid rgba(255, 255, 255, 0.4);
+	border: 3px solid rgba(255, 255, 255, 0.3);
 }
 .nav-btn {
 	cursor: pointer;
