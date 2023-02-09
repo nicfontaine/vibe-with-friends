@@ -1,6 +1,7 @@
 import { MouseEvent } from "react";
 import { AiOutlineHome, AiOutlineUser } from "react-icons/ai";
 import { HiOutlineUserGroup } from "react-icons/hi";
+import { RiAdminLine } from "react-icons/ri";
 import { useEffect, useRef, useState } from "react";
 import PlayerBox from "../components/PlayerBox";
 import BtnCreateGroup from "../components/BtnCreateGroup";
@@ -42,6 +43,7 @@ const Home = function () {
 			dispatch(setGroupID(_gid));
 			joinGroupOnLoad(_gid, user.id);
 		} else if (_gid.length) {
+			// TODO: Re-create group if expired
 			// NOTE: Refreshing owner, is websocket still open?
 		}
 	}, []);
@@ -69,7 +71,11 @@ const Home = function () {
 				<h1 className="heading">{process.env.NEXT_PUBLIC_APP_NAME}</h1>
 				<div className="button-container">
 					<button onClick={handleButtonUser} className="nav-btn nav-icon-user">
-						<AiOutlineUser color="#633796" size="2.7rem" />
+						{user.isOwner == true ? (
+							<RiAdminLine color="#633796" size="2.7rem" />
+						) : (
+							<AiOutlineUser color="#633796" size="2.7rem" />
+						)}
 					</button>
 				</div>
 			</nav>
