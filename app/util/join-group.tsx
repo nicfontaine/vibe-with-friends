@@ -15,7 +15,7 @@ const joinGroup = async (group: string, user: string) => {
 		confirm('Friend code no longer valid');
 		window.location.assign('/');
 	}
-	return res.user;
+	return res?.user;
 };
 
 export default joinGroup;

@@ -1,13 +1,17 @@
 import { MouseEvent } from 'react';
 import copyToClipboard from '../util/copy-to-clipboard';
 
-interface Props {
+interface IProps {
 	setIsOwner: (val: boolean) => void;
 	setGroupID: (val: string) => void;
 	setUrlMsg: (val: string) => void;
 }
 
-const BtnCreateGroup = function ({ setIsOwner, setGroupID, setUrlMsg }: Props) {
+const BtnCreateGroup = function ({
+	setIsOwner,
+	setGroupID,
+	setUrlMsg,
+}: IProps) {
 	// Create new group, as owner
 	const createGroup = async (e: MouseEvent<HTMLButtonElement>) => {
 		setIsOwner(true);
@@ -25,7 +29,7 @@ const BtnCreateGroup = function ({ setIsOwner, setGroupID, setUrlMsg }: Props) {
 
 		setGroupID(group);
 		const url = new URL(window.location.href);
-		const urlStr: string = url.toString();
+		const urlStr = url.toString();
 		url.searchParams.set('group', group);
 		window.history.replaceState(null, '', url);
 

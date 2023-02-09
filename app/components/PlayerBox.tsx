@@ -2,23 +2,23 @@ import { useState } from 'react';
 import { useRef } from 'react';
 import sheets from '../util/sheets';
 
-interface PlayerBoxProps {
+interface IPlayerBoxProps {
 	isOwner: boolean;
 	groupID: string;
 }
-interface Sheet {
+interface ISheet {
 	bpm: number;
 	song: Array<number>;
 }
 
-const PlayerBox = function ({ isOwner, groupID }: PlayerBoxProps) {
+const PlayerBox = function ({ isOwner, groupID }: IPlayerBoxProps) {
 	const playerBoxRef = useRef<HTMLDivElement>(null);
 	const [isRunning, setIsRunning] = useState(false);
 
-	const player = async (sheet: Sheet) => {
+	const player = async (sheet: ISheet) => {
 		if (isRunning) return;
 		setIsRunning(true);
-		const mult: number = 120 / sheet.bpm;
+		const mult = 120 / sheet.bpm;
 		const timer = function (ms: number) {
 			return new Promise((resolve) => setTimeout(resolve, ms));
 		};

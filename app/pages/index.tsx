@@ -1,13 +1,13 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import Link from 'next/link';
 import { MouseEvent } from 'react';
 import { AiOutlineHome, AiOutlineUser } from 'react-icons/ai';
+import { HiOutlineUserGroup } from 'react-icons/hi';
 // import styles from '../styles/Home.module.css';
 import { useEffect, useRef, useState } from 'react';
-import PlayerBox from './PlayerBox';
-import BtnCreateGroup from './BtnCreateGroup';
-import joinGroup from './join-group';
+import PlayerBox from '../components/PlayerBox';
+import BtnCreateGroup from '../components/BtnCreateGroup';
+import joinGroup from '../util/join-group';
 
 const Home = function () {
 	const urlRef = useRef<HTMLDivElement>(null);
@@ -27,7 +27,7 @@ const Home = function () {
 		// TODO: Check userID and isOwner values from Redux store
 		// setIsOwner(_owner || false);
 		const params = new URLSearchParams(window.location.search);
-		const _gid: string = params.get('group') || '';
+		const _gid = params.get('group') || '';
 		setGroupID(_gid);
 
 		console.log(
@@ -67,6 +67,16 @@ const Home = function () {
 			</nav>
 
 			<main style={{ textAlign: 'center' }}>
+				{groupID && (
+					<div className="d-flx">
+						<span className="icon mg-r-4 d-flx flx-items-ctr">
+							<HiOutlineUserGroup size="35"></HiOutlineUserGroup>
+						</span>
+						<code className="text-code pd-a-2 pd-r-3 pd-l-3 rnd-8">
+							{groupID}
+						</code>
+					</div>
+				)}
 				<div className="button-container">
 					{!groupID.length && (
 						<BtnCreateGroup

@@ -8,6 +8,8 @@ body {
 
 html {
 	background: #241338;
+	background: linear-gradient(10deg, #371842, #241338);
+	min-height: 100vh;
 	color: #eee;
 }
 
@@ -116,4 +118,13 @@ h1 {
 .url-notification {
 	margin-top: 1rem;
 	color: rgba(255, 255, 255, 0.8);
+}
+
+code {
+	background: rgba(0, 0, 0, 0.5);
+	border-radius: 5px;
+	padding: 0.15rem 0.3rem;
+}
+.icon {
+	color: rgba(255, 255, 255, 0.5);
 }
