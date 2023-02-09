@@ -1,4 +1,4 @@
-export default function copyToClipboard (textToCopy) {
+export default function copyToClipboard (textToCopy: string) {
 	if (navigator.clipboard && window.isSecureContext) {
 		return navigator.clipboard.writeText(textToCopy);
 	} else {
@@ -10,8 +10,8 @@ export default function copyToClipboard (textToCopy) {
 		document.body.appendChild(textArea);
 		textArea.focus();
 		textArea.select();
-		return new Promise((resolve, reject) => {
-			document.execCommand('copy') ? resolve() : reject();
+		return new Promise<void>((resolve, reject) => {
+			document.execCommand("copy") ? resolve() : reject();
 			textArea.remove();
 		});
 	}
