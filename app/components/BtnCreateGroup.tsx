@@ -13,7 +13,9 @@ const BtnCreateGroup = function ({
 	setUrlMsg,
 }: IProps) {
 	// Create new group, as owner
-	const createGroup = async (e: MouseEvent<HTMLButtonElement>) => {
+	const createGroup = async (
+		e: MouseEvent<HTMLButtonElement>
+	): Promise<void> => {
 		setIsOwner(true);
 		if (e.target !== null) {
 			(e.target as HTMLButtonElement).blur();

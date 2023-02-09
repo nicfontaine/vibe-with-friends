@@ -1,4 +1,7 @@
-const joinGroup = async (group: string, user: string) => {
+const joinGroup = async (
+	group: string,
+	user: string
+): Promise<string | undefined> => {
 	console.log('joinGroup()');
 	if (!group.length) {
 		console.log('Must supply a group to joinGroup()');

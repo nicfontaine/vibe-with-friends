@@ -15,7 +15,7 @@ const PlayerBox = function ({ isOwner, groupID }: IPlayerBoxProps) {
 	const playerBoxRef = useRef<HTMLDivElement>(null);
 	const [isRunning, setIsRunning] = useState(false);
 
-	const player = async (sheet: ISheet) => {
+	const player = async (sheet: ISheet): Promise<void> => {
 		if (isRunning) return;
 		setIsRunning(true);
 		const mult = 120 / sheet.bpm;

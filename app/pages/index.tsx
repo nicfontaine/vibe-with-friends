@@ -17,10 +17,13 @@ const Home = function () {
 	const [userID, setUserId] = useState('');
 	const [urlMsg, setUrlMsg] = useState('');
 
-	const joinGroupOnLoad = async function (group: string, user: string) {
+	const joinGroupOnLoad = async function (
+		group: string,
+		user: string
+	): Promise<void> {
 		setIsOwner(false);
 		const _u = await joinGroup(group, user);
-		if (_u !== null) setUserId(_u);
+		if (_u !== undefined) setUserId(_u);
 	};
 
 	useEffect(() => {
@@ -42,13 +45,13 @@ const Home = function () {
 		}
 	}, []);
 
-	const handleGoHome = function (e: MouseEvent<HTMLButtonElement>) {
+	const handleGoHome = function (e: MouseEvent<HTMLButtonElement>): void {
 		setGroupID('');
 		setIsOwner(false);
 		window.history.replaceState(null, '', '/');
 	};
 
-	const handleUserButton = function (e: MouseEvent<HTMLButtonElement>) {};
+	const handleUserButton = function (e: MouseEvent<HTMLButtonElement>): void {};
 
 	return (
 		<>
