@@ -1,6 +1,7 @@
 import express from "express";
 import namor from "namor";
 import { v4 as uuidv4 } from "uuid";
+import { Server } from "socket.io";
 const PORT = process.env.PORT || 3680;
 
 const app = express();

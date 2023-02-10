@@ -86,7 +86,7 @@ const Home = function () {
 						<span className="icon mg-r-4 d-flx flx-items-ctr">
 							<HiOutlineUserGroup size="35"></HiOutlineUserGroup>
 						</span>
-						<code className="text-code pd-a-2 pd-r-3 pd-l-3 rnd-8">
+						<code className="text-code allselect pd-a-2 pd-r-3 pd-l-3 rnd-8">
 							{group.id}
 						</code>
 					</div>

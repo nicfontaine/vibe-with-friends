@@ -92,7 +92,7 @@ figure.frame {
 
 /*** Forms ***/
 
-input[type='range'] {
+input[type="range"] {
 	width: 100%;
 }
 
@@ -177,7 +177,7 @@ pre > code {
 .d-block,
 button.d-block,
 .btn.d-block,
-.input[type='submit'].d-block {
+.input[type="submit"].d-block {
 	display: block;
 }
 code.d-block {
@@ -198,7 +198,7 @@ code.d-block {
 .flt-clr {
 	display: table;
 	clear: both;
-	content: '';
+	content: "";
 }
 
 /*** Templating --- Padding ***/
@@ -916,4 +916,7 @@ body.dialog-active {
 
 .noevents {
 	pointer-events: none;
+}
+.allselect {
+	user-select: all;
 }

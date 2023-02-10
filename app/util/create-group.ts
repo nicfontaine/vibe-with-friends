@@ -7,13 +7,7 @@ interface IRes {
 	msg: string;
 }
 
-const createGroup = async function (
-	e: MouseEvent<HTMLButtonElement>,
-	_uid: string,
-): Promise<IRes> {
-	if (e.target !== null) {
-		(e.target as HTMLButtonElement).blur();
-	}
+const createGroup = async function (_uid: string): Promise<IRes> {
 	const response = await fetch("/api/group/create", {
 		method: "POST",
 		body: JSON.stringify({ userID: _uid }),
@@ -27,6 +21,7 @@ const createGroup = async function (
 	const urlStr = url.toString();
 	url.searchParams.set("group", groupID);
 	window.history.replaceState(null, "", url);
+
 	const rtn = {
 		groupID,
 		userID: _uid || res.userID,

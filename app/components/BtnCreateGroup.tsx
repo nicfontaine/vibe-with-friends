@@ -13,10 +13,14 @@ const BtnCreateGroup = function ({ setStatusMsg }: IProps) {
 	const user = useAppSelector((state) => state.user);
 
 	const handleCreateGroup = async function (e: MouseEvent<HTMLButtonElement>) {
+		if (e.target !== null) {
+			(e.target as HTMLButtonElement).blur();
+		}
 		dispatch(setIsOwner(true));
-		const res = await createGroup(e, user.id);
-		dispatch(setGroupID(res.groupID));
-		dispatch(setUserID(res.userID));
+		const res = await createGroup(user.id);
+		const { groupID, userID } = res;
+		dispatch(setGroupID(groupID));
+		dispatch(setUserID(userID));
 		if (res.msg) {
 			setStatusMsg(res.msg);
 		}

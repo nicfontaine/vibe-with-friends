@@ -13,6 +13,7 @@ module.exports = {
 		indent: [2, "tab"],
 		"no-tabs": 0,
 		quotes: "off",
-		allowEmptyReject: 1,
+		"no-unused-vars": "off",
+		allowEmptyReject: 0,
 	},
 };
