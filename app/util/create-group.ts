@@ -27,22 +27,24 @@ const createGroup = async function (
 	const urlStr = url.toString();
 	url.searchParams.set("group", groupID);
 	window.history.replaceState(null, "", url);
+	const rtn = {
+		groupID,
+		userID: _uid || res.userID,
+		msg: "",
+	};
 
 	if (navigator.share) {
 		await navigator.share({
-			title: process.env.NEXT_PUBLIC_APP_NAME || "App",
+			title: process.env.NEXT_PUBLIC_APP_NAME,
 			text: "Use this custom link",
 			url: urlStr,
 		});
 	} else {
 		copyToClipboard(urlStr);
+		rtn.msg = "Share URL copied to clipboard";
 	}
 
-	return {
-		groupID,
-		userID: _uid || res.userID,
-		msg: "Share URL copied to clipboard",
-	};
+	return rtn;
 };
 
 export default createGroup;

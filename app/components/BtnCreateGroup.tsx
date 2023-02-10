@@ -17,7 +17,9 @@ const BtnCreateGroup = function ({ setStatusMsg }: IProps) {
 		const res = await createGroup(e, user.id);
 		dispatch(setGroupID(res.groupID));
 		dispatch(setUserID(res.userID));
-		setStatusMsg(res.msg);
+		if (res.msg) {
+			setStatusMsg(res.msg);
+		}
 	};
 
 	return (
