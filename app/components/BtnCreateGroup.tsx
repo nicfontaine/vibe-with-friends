@@ -27,7 +27,7 @@ const BtnCreateGroup = function ({ setStatusMsg }: IProps) {
 	};
 
 	return (
-		<button onClick={handleCreateGroup} className="btn-border">
+		<button onClick={handleCreateGroup} className="btn-large btn-border">
 			Create Group
 		</button>
 	);

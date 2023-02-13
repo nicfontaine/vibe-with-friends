@@ -12,11 +12,10 @@ import { batch } from "react-redux";
 import { setGroupID } from "../feature/groupSlice";
 
 const Home = function () {
+	//
 	const dispatch = useAppDispatch();
 	const statusRef = useRef<HTMLDivElement>(null);
-
 	const [statusMsg, setStatusMsg] = useState("");
-
 	const user = useAppSelector((state) => state.user);
 	const group = useAppSelector((state) => state.group);
 
@@ -24,6 +23,7 @@ const Home = function () {
 		group: string,
 		user: string,
 	): Promise<void> {
+		console.log("joinGroupOnLoad");
 		dispatch(setIsOwner(false));
 		const _u = await joinGroup(group, user);
 		if (_u !== undefined) {
@@ -70,6 +70,7 @@ const Home = function () {
 				</div>
 				<h1 className="heading">{process.env.NEXT_PUBLIC_APP_NAME}</h1>
 				<div className="button-container">
+					<PlayerBox isOwner={user.isOwner} groupID={group.id}></PlayerBox>
 					<button onClick={handleButtonUser} className="nav-btn nav-icon-user">
 						{user.isOwner == true ? (
 							<RiAdminLine color="#633796" size="2.7rem" />
@@ -83,8 +84,8 @@ const Home = function () {
 			<main style={{ textAlign: "center" }}>
 				{group.id && (
 					<div className="d-flx">
-						<span className="icon mg-r-4 d-flx flx-items-ctr">
-							<HiOutlineUserGroup size="35"></HiOutlineUserGroup>
+						<span className="icon mg-r-6 d-flx flx-items-ctr">
+							<HiOutlineUserGroup size="40"></HiOutlineUserGroup>
 						</span>
 						<code className="text-code allselect pd-a-2 pd-r-3 pd-l-3 rnd-8">
 							{group.id}
@@ -97,8 +98,6 @@ const Home = function () {
 						<BtnCreateGroup setStatusMsg={setStatusMsg}></BtnCreateGroup>
 					)}
 				</div>
-
-				<PlayerBox isOwner={user.isOwner} groupID={group.id}></PlayerBox>
 
 				<div ref={statusRef} className="status-msg">
 					{statusMsg}

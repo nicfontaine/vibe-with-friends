@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { useRef } from 'react';
-import sheets from '../util/sheets';
+import { useState } from "react";
+import { useRef } from "react";
+import sheets from "../util/sheets";
 
 interface IPlayerBoxProps {
 	isOwner: boolean;
@@ -12,7 +12,8 @@ interface ISheet {
 }
 
 const PlayerBox = function ({ isOwner, groupID }: IPlayerBoxProps) {
-	const playerBoxRef = useRef<HTMLDivElement>(null);
+	//
+	const playerBoxRef = useRef<HTMLButtonElement>(null);
 	const [isRunning, setIsRunning] = useState(false);
 
 	const player = async (sheet: ISheet): Promise<void> => {
@@ -22,10 +23,10 @@ const PlayerBox = function ({ isOwner, groupID }: IPlayerBoxProps) {
 		const timer = function (ms: number) {
 			return new Promise((resolve) => setTimeout(resolve, ms));
 		};
-		const on = '#3BA067';
-		const off = 'rgba(255,255,255,0.2)';
+		const on = "#3BA067";
+		const off = "rgba(255,255,255,0.2)";
 		let i = 0;
-		const innerSave = playerBoxRef.current?.innerHTML || '';
+		const innerSave = playerBoxRef.current?.innerHTML || "";
 		for (const dur of sheet.song) {
 			const active = i % 2 === 0;
 			if (active) {
@@ -38,7 +39,7 @@ const PlayerBox = function ({ isOwner, groupID }: IPlayerBoxProps) {
 				navigator.vibrate(0);
 				if (playerBoxRef.current !== null) {
 					playerBoxRef.current.style.background = off;
-					playerBoxRef.current.innerHTML = `<span></span>`;
+					playerBoxRef.current.innerHTML = `<span>Playing...</span>`;
 				}
 			}
 			i++;
@@ -53,14 +54,14 @@ const PlayerBox = function ({ isOwner, groupID }: IPlayerBoxProps) {
 	};
 
 	return (
-		<div
+		<button
 			ref={playerBoxRef}
-			className={`player-box
-			${isOwner && groupID ? 'show' : ''}`}
+			className={`player-box btn-med btn-border mg-r-4
+			${isOwner && groupID ? "show" : ""}`}
 			onClick={() => player(sheets.jingle)}
 		>
-			<span>Run</span>
-		</div>
+			<span>Play Sync</span>
+		</button>
 	);
 };
 
