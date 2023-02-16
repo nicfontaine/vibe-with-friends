@@ -11,7 +11,6 @@ module.exports = {
 		"plugin:react/recommended",
 		"plugin:@typescript-eslint/eslint-recommended",
 		"plugin:@typescript-eslint/recommended",
-		"prettier",
 	],
 	overrides: [],
 	parserOptions: {
@@ -22,7 +21,14 @@ module.exports = {
 	rules: {
 		indent: [2, "tab"],
 		"no-tabs": 0,
-		quotes: "off",
+		"@typescript-eslint/quotes": [
+			"error",
+			"double",
+			{
+				"avoidEscape": true,
+				"allowTemplateLiterals": true,
+			},
+		],
 		"@typescript-eslint/no-unused-vars": "off",
 		"@typescript-eslint/no-explicit-any": "error",
 		"react/prop-types": 0,

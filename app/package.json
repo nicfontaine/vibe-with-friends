@@ -1,5 +1,5 @@
 {
-	"name": "vibe-with-friends",
+	"name": "vibe-with-me",
 	"version": "0.1.0",
 	"proxy": "http://localhost:3680",
 	"private": true,
@@ -15,12 +15,14 @@
 		"namor": "^2.0.3",
 		"nanoid": "^3.3.3",
 		"next": "12.1.5",
+		"pusher-js": "^8.0.1",
 		"react": "18.0.0",
 		"react-dom": "18.0.0",
 		"react-icons": "^4.3.1",
 		"react-redux": "^8.0.5",
 		"redux": "^4.2.1",
 		"redux-persist": "^6.0.0",
+		"socket.io-client": "^4.6.0",
 		"uuid": "^8.3.2"
 	},
 	"devDependencies": {

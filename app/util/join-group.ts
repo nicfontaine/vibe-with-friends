@@ -1,24 +1,41 @@
+interface IUser {
+	[key: string]: {
+		name: string;
+	}
+}
+interface IReturn {
+	userID: string;
+	isOwner: boolean;
+	ownerID: string;
+	users: IUser;
+	err?: string;
+}
+
 const joinGroup = async function (
 	groupID: string,
 	userID: string,
-): Promise<string | undefined> {
-	console.log("joinGroup()");
-	if (!groupID.length) {
-		console.log("Must supply a group to joinGroup()");
-		return;
-	}
+): Promise<IReturn> {
+	//
 	const response = await fetch("/api/group/join", {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify({ groupID, userID }),
 	});
 	const res = await response.json();
-	if (res.err) console.log(res.err);
-	if (res.groupID === null) {
-		confirm("Friend code no longer valid");
-		window.location.assign("/");
+
+	const rtn: IReturn = {
+		userID: res.userID,
+		isOwner: res.isOwner,
+		ownerID: res.ownerID,
+		users: res.users,
+	};
+
+	// Group expired, reset
+	if (res.err) {
+		rtn.err = res.err;
 	}
-	return res?.userID;
+
+	return rtn;
 };
 
 export default joinGroup;

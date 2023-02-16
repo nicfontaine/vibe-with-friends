@@ -1,59 +1,83 @@
-import { MouseEvent } from "react";
+import { useEffect, useState, MouseEvent } from "react";
+import { useRouter } from "next/router";
+import { batch } from "react-redux";
 import { AiOutlineHome, AiOutlineUser } from "react-icons/ai";
 import { HiOutlineUserGroup } from "react-icons/hi";
 import { RiAdminLine } from "react-icons/ri";
-import { useEffect, useRef, useState } from "react";
 import PlayerBox from "../components/PlayerBox";
 import BtnCreateGroup from "../components/BtnCreateGroup";
+import StatusMsg from "../components/StatusMsg";
 import joinGroup from "../util/join-group";
 import { setIsOwner, setUserID } from "../feature/userSlice";
 import { useAppDispatch, useAppSelector } from "../app/store";
-import { batch } from "react-redux";
-import { setGroupID } from "../feature/groupSlice";
+import { addGroupUser, deleteGroup, setGroupID, setGroupOwner, setGroupUsers } from "../feature/groupSlice";
+// import Pusher from 'pusher-js/with-encryption';
+import Pusher from "pusher-js";
+import * as PusherTypes from "pusher-js";
+import UsersGrid from "../components/UsersGrid";
+import Callback from "pusher-js/types/src/core/events/callback";
+const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY as string, {
+	cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER as string,
+});
+// Pusher.logToConsole = true;
 
 const Home = function () {
 	//
-	const dispatch = useAppDispatch();
-	const statusRef = useRef<HTMLDivElement>(null);
+	const router = useRouter();
 	const [statusMsg, setStatusMsg] = useState("");
+	
+	const dispatch = useAppDispatch();
 	const user = useAppSelector((state) => state.user);
 	const group = useAppSelector((state) => state.group);
 
 	const joinGroupOnLoad = async function (
-		group: string,
-		user: string,
+		groupID: string,
+		userID: string,
 	): Promise<void> {
-		console.log("joinGroupOnLoad");
-		dispatch(setIsOwner(false));
-		const _u = await joinGroup(group, user);
-		if (_u !== undefined) {
-			dispatch(setUserID(_u));
+		const res = await joinGroup(groupID, userID);
+		if (res.err) {
+			router.push("/", undefined, { shallow: true });
+			dispatch(deleteGroup(groupID));
+			setStatusMsg(res.err);
+			return;
 		}
+		batch(() => {
+			// TODO: Cleanup to just: { _user, _group }
+			dispatch(setIsOwner(res.isOwner));
+			dispatch(setUserID(res.userID));
+			
+			dispatch(setGroupID(groupID));
+			dispatch(setGroupOwner(res.ownerID));
+			dispatch(setGroupUsers(res.users));
+		});
+		const channel = pusher.subscribe(groupID);
+		channel.bind("add-user", function (data: any) {
+			dispatch(setGroupUsers(data.store.users));
+		});
 	};
 
 	useEffect(() => {
 		setStatusMsg("");
+		// Check URL for group to join
 		const params = new URLSearchParams(window.location.search);
-		const _gid = params.get("group") || "";
-		console.log(
-			`[-- LOAD DATA --]\nuser.id: ${user.id}\ngroupID: ${_gid}\nisOwner: ${user.isOwner}`,
-		);
-		if (_gid.length && user.isOwner === false) {
-			// Still try to join, even if already joined. To check in case group doesn't exist anymore
-			dispatch(setGroupID(_gid));
-			joinGroupOnLoad(_gid, user.id);
-		} else if (_gid.length) {
-			// TODO: Re-create group if expired
-			// NOTE: Refreshing owner, is websocket still open?
+		const urlGroupID = params.get("group") || "";
+		if (!urlGroupID.length) {
+			if (group.id) {
+				router.push({
+					query: { ...router.query, group: group.id },
+				});
+			}
+			return;
 		}
+		joinGroupOnLoad(urlGroupID, user.id);
 	}, []);
 
 	const handleButtonHome = function (e: MouseEvent<HTMLButtonElement>): void {
 		batch(() => {
-			dispatch(setGroupID(""));
+			dispatch(deleteGroup(group.id));
 			dispatch(setIsOwner(false));
 		});
-		window.history.replaceState(null, "", "/");
+		router.push({ href: "/" });
 	};
 
 	const handleButtonUser = function (e: MouseEvent<HTMLButtonElement>): void {
@@ -99,9 +123,9 @@ const Home = function () {
 					)}
 				</div>
 
-				<div ref={statusRef} className="status-msg">
-					{statusMsg}
-				</div>
+				<UsersGrid />
+
+				<StatusMsg statusMsg={statusMsg} setStatusMsg={setStatusMsg} />
 			</main>
 		</>
 	);
