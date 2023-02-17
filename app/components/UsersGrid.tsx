@@ -1,9 +1,15 @@
+import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../app/store";
+import GroupClient from "../util/group-client";
 
 const UsersGrid = function () {
 
 	const user = useAppSelector((state) => state.user);
 	const group = useAppSelector((state) => state.group);
+
+	useEffect(() => {
+		GroupClient.unsubscribe();
+	}, []);
 	
 	return (
 		<>
@@ -14,7 +20,7 @@ const UsersGrid = function () {
 							key={u}
 							className={`user-grid-block ${u === user.id ? "user" : ""}`}
 						>
-							<div className="name">{u.split("-")[0]}</div>
+							<div className="name">{group.users[u].name}</div>
 						</div>
 					);
 				})}

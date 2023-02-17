@@ -31,6 +31,8 @@ module.exports = {
 		],
 		"@typescript-eslint/no-unused-vars": "off",
 		"@typescript-eslint/no-explicit-any": "error",
+		"@typescript-eslint/no-empty-function": "off",
+		"no-empty": "off",
 		"react/prop-types": 0,
 		allowEmptyReject: 0,
 		strict: ["error", "global"],

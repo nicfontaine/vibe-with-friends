@@ -1,41 +1,25 @@
-interface IUser {
-	[key: string]: {
-		name: string;
-	}
-}
+import { IUser, IGroup } from "../interfaces/types";
+
 interface IReturn {
-	userID: string;
-	isOwner: boolean;
-	ownerID: string;
-	users: IUser;
+	user: IUser;
+	group: IGroup;
 	err?: string;
 }
 
 const joinGroup = async function (
+	user: IUser,
 	groupID: string,
-	userID: string,
 ): Promise<IReturn> {
-	//
 	const response = await fetch("/api/group/join", {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify({ groupID, userID }),
+		body: JSON.stringify({
+			user,
+			group: { id: groupID },
+		}),
 	});
-	const res = await response.json();
-
-	const rtn: IReturn = {
-		userID: res.userID,
-		isOwner: res.isOwner,
-		ownerID: res.ownerID,
-		users: res.users,
-	};
-
-	// Group expired, reset
-	if (res.err) {
-		rtn.err = res.err;
-	}
-
-	return rtn;
+	const res: IReturn = await response.json();
+	return res;
 };
 
 export default joinGroup;

@@ -20,64 +20,104 @@ app.use(cors());
 // TODO: Replace with DB
 const store = {};
 
+app.post("/api/group/change-username", (req, res) => {
+	//
+	const { user, group } = req.body;
+
+	store[group.id].users[user.id].name = user.name;
+	group.users = store[group.id].users;
+
+	pusher.trigger(group.id, "change-username", {
+		message: "Changed Username",
+		store: store[group.id],
+	});
+
+	res.status(200).json({ user, group });
+	//
+});
+
+app.post("/api/group/play-sync", (req, res) => {
+	//
+	const { gid, sheet } = req.body;
+
+	pusher.trigger(gid, "play-sync", {
+		message: "Play sync",
+		sheet,
+	});
+
+	res.status(200).send();
+	//
+});
+
+// Create new group, as owner
 app.post("/api/group/create", (req, res) => {
-	const groupID = createGroupID();
-	const userID = req.body.userID || uuidv4();
-	store[groupID] = {
-		ownerID: userID,
+	//
+	const { user } = req.body;
+	user.id = user.id || uuidv4();
+
+	const group = {
+		id: createGroupID(),
+		ownerID: user.id,
+	};
+
+	store[group.id] = {
+		ownerID: user.id,
 		users: {
-			[userID]: { name: "" },
+			[user.id]: { name: user.name },
 		},
 	};
-	console.log(`[/api/group/create] New group created: ${groupID}`);
-	res.status(200).json({
-		groupID,
-		userID,
-		users: store[groupID].users,
-	});
+
+	group.users = store[group.id].users;
+
+	console.log(`[/api/group/create] New group created: ${group.id}`);
+	res.status(200).json({ user, group });
+	//
 });
 
 app.post("/api/group/join", (req, res) => {
 	//
-	const { groupID } = req.body;
-	const userID = req.body.userID || uuidv4();
-	const rtn = { groupID, userID, isOwner: false };
+	const { user, group } = req.body;
+	user.id = user.id || uuidv4();
 
 	// Group doesn't exist / expired
-	if (!(groupID in store)) {
-		console.log(`[/api/group/join] Group not found: ${groupID}`);
+	if (!(group.id in store)) {
+		console.log(`[/api/group/join] Group not found: ${group.id}`);
+		user.isOwner = false;
+		group.id = null;
 		return res.status(200).json({
 			err: "Group not found",
-			groupID: null,
-			userID,
-			isOwner: false,
+			user,
+			group,
 		});
 	}
 
-	rtn.ownerID = store[groupID].ownerID;
+	group.ownerID = store[group.id].ownerID;
 
 	// User is owner. Already set to ownerID, and in list of users
-	if (userID === store[groupID].ownerID) {
-		rtn.isOwner = true;
-		console.log(`[/api/group/join] User is group owner, rejoining: ${groupID}`);
+	if (user.id === store[group.id].ownerID) {
+		user.isOwner = true;
+		console.log(
+			`[/api/group/join] User is group owner, rejoining: ${group.id}`,
+		);
 	}
 	// New group user
-	else if (!([userID] in store[groupID].users)) {
-		store[groupID].users[userID] = { name: "" };
-		console.log(`[/api/group/join] User added to group: ${groupID}`);
+	else if (!([user.id] in store[group.id].users)) {
+		store[group.id].users[user.id] = user;
+		console.log(`[/api/group/join] User added to group: ${group.id}`);
 	}
 	// User exists in group
 	else {
-		console.log(`[/api/groupID/join] User already in group: ${groupID}`);
+		console.log(`[/api/group.id/join] User already in group: ${group.id}`);
 	}
 
-	pusher.trigger(groupID, "add-user", {
+	pusher.trigger(group.id, "add-user", {
 		message: "User Added",
-		store: store[groupID],
+		store: store[group.id],
 	});
 
-	rtn.users = store[groupID].users;
-	res.status(200).json(rtn);
+	group.users = store[group.id].users;
+	res.status(200).json({ user, group });
+	//
 });
 
 // app.get("*", (req, res) => {
