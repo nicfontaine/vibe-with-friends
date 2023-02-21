@@ -6,14 +6,15 @@ import { HiOutlineUserGroup } from "react-icons/hi";
 import { RiAdminLine } from "react-icons/ri";
 import BtnCreateGroup from "../components/BtnCreateGroup";
 import StatusMsg from "../components/StatusMsg";
-import { setUserIsOwner, setUser } from "../feature/userSlice";
+import { setUserIsOwner } from "../feature/userSlice";
 import { useAppDispatch, useAppSelector } from "../app/store";
-import { deleteGroup, setGroup, setGroupUsers } from "../feature/groupSlice";
+import { deleteGroup } from "../feature/groupSlice";
 import UsersGrid from "../components/UsersGrid";
 import BtnPlaySync from "../components/BtnPlaySync";
 import UserGroupJoin from "../components/UserGroupJoin";
+import BtnPlayTap from "../components/BtnPlayTap";
 
-const Home = function () {
+const Home = function ({ pusher }) {
 	//
 	const router = useRouter();
 	const [statusMsg, setStatusMsg] = useState("");
@@ -45,13 +46,14 @@ const Home = function () {
 
 				<div className="button-container left">
 					<button onClick={handleButtonHome} className="nav-btn nav-icon-home mg-r-4">
-						<AiOutlineHome color="#633796" size="2.7rem" />
+						<AiOutlineHome className="icon-main" size="45" />
 					</button>
 					{groupStore.id.length ? (
 						<BtnCreateGroup
 							setStatusMsg={setStatusMsg}
 							size="med"
 							text="New Group"
+							pusher={pusher}
 						></BtnCreateGroup>
 					) : null}
 				</div>
@@ -62,9 +64,9 @@ const Home = function () {
 					<BtnPlaySync></BtnPlaySync>
 					<button onClick={handleButtonUser} className="nav-btn nav-icon-user">
 						{userStore.isOwner == true ? (
-							<RiAdminLine color="#633796" size="2.7rem" />
+							<RiAdminLine className="icon-main" size="45" />
 						) : (
-							<AiOutlineUser color="#633796" size="2.7rem" />
+							<AiOutlineUser className="icon-main" size="45" />
 						)}
 						{userStore.name && <span className="user-name">{userStore.name}</span>}
 					</button>
@@ -87,7 +89,11 @@ const Home = function () {
 
 				<div className="button-container">
 					{!groupStore.id.length && (
-						<BtnCreateGroup setStatusMsg={setStatusMsg} size="large"></BtnCreateGroup>
+						<BtnCreateGroup
+							setStatusMsg={setStatusMsg}
+							size="large"
+							pusher={pusher}
+						></BtnCreateGroup>
 					)}
 				</div>
 
@@ -95,9 +101,12 @@ const Home = function () {
 					setStatusMsg={setStatusMsg}
 					showUserName={showUserName}
 					setShowUserName={setShowUserName}
+					pusher={pusher}
 				/>
 				
 				<UsersGrid />
+
+				<BtnPlayTap />
 
 				<StatusMsg statusMsg={statusMsg} setStatusMsg={setStatusMsg} />
 

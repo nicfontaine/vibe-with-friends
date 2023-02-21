@@ -33,7 +33,10 @@ const UserName = function ({ showUserName, setShowUserName }: IProps) {
 	
 	// Changing name while in a group
 	useEffect(() => {
-		if (groupStore.id) updateUserName();
+		const n = userStore.name;
+		if (n && groupStore.id && n !== groupStore.users[userStore.id].name) {
+			updateUserName();
+		}
 	}, [userStore.name]);
 
 	const handleKeyDown = function (e: KeyboardEvent<HTMLInputElement>): void {

@@ -3,8 +3,7 @@ import { useRouter } from "next/router";
 import { useDispatch, batch } from "react-redux";
 import { useAppSelector } from "../app/store";
 import joinGroup from "../util/join-group";
-import GroupClient from "../util/group-client";
-import { deleteGroup, setGroup, setGroupUsers } from "../feature/groupSlice";
+import { deleteGroup, setGroup, setGroupUserPlaying, setGroupUsers } from "../feature/groupSlice";
 import { setUser } from "../feature/userSlice";
 import UserName from "./UserName";
 import SyncPlayer from "../util/sync-player";
@@ -14,19 +13,26 @@ interface IProps {
 	setStatusMsg: (val: string) => void;
 	showUserName: boolean;
 	setShowUserName: (val: boolean) => void;
+	pusher: any;
 }
 
-const UserGroupJoin = function ({ setStatusMsg, showUserName, setShowUserName }: IProps) {
+const UserGroupJoin = function ({ setStatusMsg, showUserName, setShowUserName, pusher }: IProps) {
 
 	const router = useRouter();
 	const dispatch = useDispatch();
 
 	const userStore = useAppSelector((state) => state.user);
 
-	// Prompt username on load
 	useEffect(() => {
-		if (checkURL() && !userStore.name) {
-			setShowUserName(true);
+		if (checkURL()) {
+			// Prompt username on load
+			if (!userStore.name) {
+				setShowUserName(true);
+			}
+		} else {
+			pusher.channel?.unbind();
+			pusher.unsubscribe();
+			pusher.disconnect();
 		}
 	}, []);
 
@@ -45,8 +51,7 @@ const UserGroupJoin = function ({ setStatusMsg, showUserName, setShowUserName }:
 	};
 
 	const player = async (sheet: ISheet): Promise<void> => {
-		const p = new SyncPlayer(sheet);
-		await p.play();
+		await SyncPlayer.play(sheet);
 	};
 
 	const join = async function (gid: string): Promise<void> {
@@ -62,16 +67,28 @@ const UserGroupJoin = function ({ setStatusMsg, showUserName, setShowUserName }:
 			dispatch(setUser(user));
 			dispatch(setGroup(group));
 		});
-		GroupClient.subscribe(group.id);
-		GroupClient.bind("add-user", (data) => {
-			dispatch(setGroupUsers(data.store.users));
+		pusher.subscribe(group.id);
+		pusher.bind("add-user", (data) => {
+			dispatch(setGroupUsers(data.message.users));
 		});
-		GroupClient.bind("change-username", (data) => {
-			dispatch(setGroupUsers(data.store.users));
+		pusher.bind("change-username", (data) => {
+			dispatch(setGroupUsers(data.message.users));
+		});
+		pusher.bind("play-tap-on", (data) => {
+			if (data.message.id !== user.id) {
+				dispatch(setGroupUserPlaying({ userID: data.message.id, val: true }));
+				SyncPlayer.on(Infinity);
+			}
+		});
+		pusher.bind("play-tap-off", (data) => {
+			if (data.message.id !== user.id) {
+				dispatch(setGroupUserPlaying({ userID: data.message.id, val: false }));
+				SyncPlayer.off();
+			}
 		});
 		if (!user.isOwner) {
-			GroupClient.bind("play-sync", (data) => {
-				player(data.sheet);
+			pusher.bind("play-sync", (data) => {
+				player(data.message);
 			});
 		}
 	};

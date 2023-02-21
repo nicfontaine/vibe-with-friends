@@ -1,41 +1,31 @@
-import { Html } from "next/document";
 import { ISheet } from "../interfaces/types";
 
 class SyncPlayer {
 
-	// target?: HTMLButtonElement;
-	sheet: ISheet;
-	multiplier: number;
-
-	constructor (sheet: ISheet) {
-		this.sheet = sheet;
-		this.multiplier = 120 / sheet.bpm;
-	}
-
-	async play () {
+	static async play (sheet: ISheet) {
+		SyncPlayer.off();
+		const multiplier = 120 / sheet.bpm;
 		const timer = function (ms: number) {
 			return new Promise((resolve) => setTimeout(resolve, ms));
 		};
 		let i = 0;
-		for (const dur of this.sheet.song) {
-			const t = dur * this.multiplier;
+		for (const dur of sheet.song) {
+			const t = dur * multiplier;
 			const active = i % 2 === 0;
-			active ? this.#on(t) : this.#off();
+			active ? SyncPlayer.on(t) : SyncPlayer.off();
 			i++;
 			await timer(t);
 		}
 		document.documentElement.classList.remove("play-sync-on");
 	}
 
-	#on (t: number) {
-		// console.log("on");
-		navigator.vibrate(t);
+	static on (t: number) {
+		window?.navigator?.vibrate?.(t);
 		document.documentElement.classList.add("play-sync-on");
 	}
 
-	#off () {
-		// console.log("off");
-		navigator.vibrate(0);
+	static off () {
+		window?.navigator?.vibrate?.(0);
 		document.documentElement.classList.remove("play-sync-on");
 	}
 

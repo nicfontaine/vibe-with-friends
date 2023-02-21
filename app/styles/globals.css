@@ -18,6 +18,7 @@ html.play-sync-on {
 
 :root {
 	--main-heading-color: #a56cd5;
+	--main-icon-color: #633796;
 }
 
 a {
@@ -169,6 +170,9 @@ code {
 .icon {
 	color: rgba(255, 255, 255, 0.5);
 }
+.icon-main {
+	color: var(--main-icon-color);
+}
 
 .status-msg {
 	position: fixed;
@@ -218,6 +222,9 @@ code {
 	font-weight: 600;
 	background: rgba(255, 255, 255, 0.1);
 }
+.user-grid-block.playing {
+	background: #bd354e;
+}
 
 /* User name */
 .user-group-join {
@@ -260,4 +267,27 @@ code {
 	outline: none;
 	width: 100%;
 	text-align: center;
+}
+
+.btn-tap-play {
+	position: fixed;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 1.5rem;
+	font-size: 1.6rem;
+	cursor: pointer;
+	background: #4a9e4f;
+}
+.btn-tap-play > * {
+	user-select: none;
+}
+.btn-tap-play.active {
+	background: #c1b044;
+}
+.btn-tap-play .icon {
+	color: rgba(0, 0, 0, 0.3);
 }

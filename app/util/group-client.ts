@@ -21,7 +21,9 @@ class GroupClient {
 	}
 
 	static unsubscribe () {
-		this.pusher.unsubscribe(this.groupID);
+		if (this.groupID) {
+			this.pusher.unsubscribe(this.groupID);
+		}
 	}
 
 	static bind (hook: string, callback: any) {

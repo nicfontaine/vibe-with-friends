@@ -20,35 +20,6 @@ app.use(cors());
 // TODO: Replace with DB
 const store = {};
 
-app.post("/api/group/change-username", (req, res) => {
-	//
-	const { user, group } = req.body;
-
-	store[group.id].users[user.id].name = user.name;
-	group.users = store[group.id].users;
-
-	pusher.trigger(group.id, "change-username", {
-		message: "Changed Username",
-		store: store[group.id],
-	});
-
-	res.status(200).json({ user, group });
-	//
-});
-
-app.post("/api/group/play-sync", (req, res) => {
-	//
-	const { gid, sheet } = req.body;
-
-	pusher.trigger(gid, "play-sync", {
-		message: "Play sync",
-		sheet,
-	});
-
-	res.status(200).send();
-	//
-});
-
 // Create new group, as owner
 app.post("/api/group/create", (req, res) => {
 	//
@@ -103,6 +74,9 @@ app.post("/api/group/join", (req, res) => {
 	// New group user
 	else if (!([user.id] in store[group.id].users)) {
 		store[group.id].users[user.id] = user;
+		pusher.trigger(group.id, "add-user", {
+			message: store[group.id],
+		});
 		console.log(`[/api/group/join] User added to group: ${group.id}`);
 	}
 	// User exists in group
@@ -110,14 +84,43 @@ app.post("/api/group/join", (req, res) => {
 		console.log(`[/api/group.id/join] User already in group: ${group.id}`);
 	}
 
-	pusher.trigger(group.id, "add-user", {
-		message: "User Added",
-		store: store[group.id],
-	});
-
 	group.users = store[group.id].users;
 	res.status(200).json({ user, group });
 	//
+});
+
+app.post("/api/group/play-tap-on", (req, res) => {
+	const { user, group } = req.body;
+	pusher.trigger(group.id, "play-tap-on", {
+		message: user,
+	});
+	res.status(200).send();
+});
+
+app.post("/api/group/play-tap-off", (req, res) => {
+	const { user, group } = req.body;
+	pusher.trigger(group.id, "play-tap-off", {
+		message: user,
+	});
+	res.status(200).send();
+});
+
+app.post("/api/group/change-username", (req, res) => {
+	const { user, group } = req.body;
+	store[group.id].users[user.id].name = user.name;
+	group.users = store[group.id].users;
+	pusher.trigger(group.id, "change-username", {
+		message: store[group.id],
+	});
+	res.status(200).json({ user, group });
+});
+
+app.post("/api/group/play-sync", (req, res) => {
+	const { gid, sheet } = req.body;
+	pusher.trigger(gid, "play-sync", {
+		message: sheet,
+	});
+	res.status(200).send();
 });
 
 // app.get("*", (req, res) => {

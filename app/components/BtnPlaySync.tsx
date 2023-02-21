@@ -16,7 +16,6 @@ const BtnPlaySync = function () {
 	const player = async (sheet: ISheet): Promise<void> => {
 		if (isRunning) return;
 		setIsRunning(true);
-		const p = new SyncPlayer(sheet);
 		const text = playerBoxRef.current?.innerHTML || "";
 		//
 		fetch("/api/group/play-sync", {
@@ -27,7 +26,7 @@ const BtnPlaySync = function () {
 				sheet,
 			}),
 		});
-		await p.play();
+		await SyncPlayer.play(sheet);
 		if (playerBoxRef.current !== null) {
 			playerBoxRef.current.innerHTML = text;
 		}

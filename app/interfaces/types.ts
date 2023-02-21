@@ -10,6 +10,7 @@ interface IGroup {
 	users: {
 		[key: string]: {
 			name: string;
+			playing: boolean;
 		}
 	};
 }
@@ -17,6 +18,7 @@ interface IGroup {
 interface IGroupUser {
 	[key: string]: {
 		name: string;
+		playing: boolean;
 	}
 }
 

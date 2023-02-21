@@ -1,12 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { IUser } from "../interfaces/types";
 
-interface IState {
-	id: string;
-	name: string;
-	isOwner: boolean;
-}
-
-const initialState: IState = {
+const initialState: IUser = {
 	id: "",
 	name: "",
 	isOwner: false,
