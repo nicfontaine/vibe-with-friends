@@ -1,15 +1,9 @@
-import { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../app/store";
-import GroupClient from "../util/group-client";
+import { useAppSelector } from "../app/store";
 
 const UsersGrid = function () {
 
 	const user = useAppSelector((state) => state.user);
 	const group = useAppSelector((state) => state.group);
-
-	useEffect(() => {
-		// GroupClient.unsubscribe();
-	}, []);
 	
 	return (
 		<>

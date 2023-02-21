@@ -8,12 +8,14 @@ import { setUser } from "../feature/userSlice";
 import UserName from "./UserName";
 import SyncPlayer from "../util/sync-player";
 import { ISheet } from "../interfaces/types";
+import * as PusherTypes from "pusher-js";
+import { IRPusherAddUser, IRPusherChangeUserName, IRPusherPlaySync, IRPusherPlayTap } from "../interfaces/types-pusher-return";
 
 interface IProps {
 	setStatusMsg: (val: string) => void;
 	showUserName: boolean;
 	setShowUserName: (val: boolean) => void;
-	pusher: any;
+	pusher: PusherTypes.default;
 }
 
 const UserGroupJoin = function ({ setStatusMsg, showUserName, setShowUserName, pusher }: IProps) {
@@ -22,6 +24,7 @@ const UserGroupJoin = function ({ setStatusMsg, showUserName, setShowUserName, p
 	const dispatch = useDispatch();
 
 	const userStore = useAppSelector((state) => state.user);
+	const groupStore = useAppSelector((state) => state.group);
 
 	useEffect(() => {
 		if (checkURL()) {
@@ -30,8 +33,8 @@ const UserGroupJoin = function ({ setStatusMsg, showUserName, setShowUserName, p
 				setShowUserName(true);
 			}
 		} else {
-			pusher.channel?.unbind();
-			pusher.unsubscribe();
+			pusher.unbind();
+			pusher.unsubscribe(groupStore.id);
 			pusher.disconnect();
 		}
 	}, []);
@@ -68,26 +71,27 @@ const UserGroupJoin = function ({ setStatusMsg, showUserName, setShowUserName, p
 			dispatch(setGroup(group));
 		});
 		pusher.subscribe(group.id);
-		pusher.bind("add-user", (data) => {
+		pusher.bind("add-user", (data: IRPusherAddUser) => {
+			console.log("User added");
 			dispatch(setGroupUsers(data.message.users));
 		});
-		pusher.bind("change-username", (data) => {
+		pusher.bind("change-username", (data: IRPusherChangeUserName) => {
 			dispatch(setGroupUsers(data.message.users));
 		});
-		pusher.bind("play-tap-on", (data) => {
+		pusher.bind("play-tap-on", (data: IRPusherPlayTap) => {
 			if (data.message.id !== user.id) {
 				dispatch(setGroupUserPlaying({ userID: data.message.id, val: true }));
 				SyncPlayer.on(Infinity);
 			}
 		});
-		pusher.bind("play-tap-off", (data) => {
+		pusher.bind("play-tap-off", (data: IRPusherPlayTap) => {
 			if (data.message.id !== user.id) {
 				dispatch(setGroupUserPlaying({ userID: data.message.id, val: false }));
 				SyncPlayer.off();
 			}
 		});
 		if (!user.isOwner) {
-			pusher.bind("play-sync", (data) => {
+			pusher.bind("play-sync", (data: IRPusherPlaySync) => {
 				player(data.message);
 			});
 		}

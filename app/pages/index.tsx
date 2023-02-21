@@ -13,8 +13,11 @@ import UsersGrid from "../components/UsersGrid";
 import BtnPlaySync from "../components/BtnPlaySync";
 import UserGroupJoin from "../components/UserGroupJoin";
 import BtnPlayTap from "../components/BtnPlayTap";
-
-const Home = function ({ pusher }) {
+import * as PusherTypes from "pusher-js";
+interface IProps {
+	pusher: PusherTypes.default;
+}
+const Home = function ({ pusher }: IProps) {
 	//
 	const router = useRouter();
 	const [statusMsg, setStatusMsg] = useState("");
@@ -26,6 +29,11 @@ const Home = function ({ pusher }) {
 
 	useEffect(() => {
 		setStatusMsg("");
+		return () => {
+			pusher.unbind();
+			pusher.unsubscribe(groupStore.id);
+			pusher.disconnect();
+		};
 	}, []);
 
 	const handleButtonHome = function (e: MouseEvent<HTMLButtonElement>): void {

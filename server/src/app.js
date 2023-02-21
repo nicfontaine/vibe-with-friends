@@ -34,7 +34,7 @@ app.post("/api/group/create", (req, res) => {
 	store[group.id] = {
 		ownerID: user.id,
 		users: {
-			[user.id]: { name: user.name },
+			[user.id]: { name: user.name, isOwner: true },
 		},
 	};
 
@@ -73,7 +73,10 @@ app.post("/api/group/join", (req, res) => {
 	}
 	// New group user
 	else if (!([user.id] in store[group.id].users)) {
-		store[group.id].users[user.id] = user;
+		store[group.id].users[user.id] = {
+			name: user.name,
+			isOwner: false,
+		};
 		pusher.trigger(group.id, "add-user", {
 			message: store[group.id],
 		});

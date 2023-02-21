@@ -6,12 +6,14 @@ import { setGroup, setGroupUserPlaying, setGroupUsers } from "../feature/groupSl
 import { batch } from "react-redux";
 import { useRouter } from "next/router";
 import SyncPlayer from "../util/sync-player";
+import * as PusherTypes from "pusher-js";
+import { IRPusherAddUser, IRPusherChangeUserName, IRPusherPlayTap } from "../interfaces/types-pusher-return";
 
 interface IProps {
 	setStatusMsg: (val: string) => void;
 	size?: string;
 	text?: string;
-	pusher: any;
+	pusher: PusherTypes.default;
 }
 
 const BtnCreateGroup = function ({ setStatusMsg, size, text, pusher }: IProps) {
@@ -27,17 +29,17 @@ const BtnCreateGroup = function ({ setStatusMsg, size, text, pusher }: IProps) {
 		const { user, group } = res;
 
 		pusher.subscribe(group.id);
-		pusher.bind("add-user", (data) => {
+		pusher.bind("add-user", (data: IRPusherAddUser) => {
 			dispatch(setGroupUsers(data.message.users));
 		});
-		pusher.bind("change-username", (data) => {
+		pusher.bind("change-username", (data: IRPusherChangeUserName) => {
 			dispatch(setGroupUsers(data.message.users));
 		});
-		pusher.bind("play-tap-on", (data) => {
+		pusher.bind("play-tap-on", (data: IRPusherPlayTap) => {
 			dispatch(setGroupUserPlaying({ userID: data.message.id, val: true }));
 			SyncPlayer.on(Infinity);
 		});
-		pusher.bind("play-tap-off", (data) => {
+		pusher.bind("play-tap-off", (data: IRPusherPlayTap) => {
 			dispatch(setGroupUserPlaying({ userID: data.message.id, val: false }));
 			SyncPlayer.off();
 		});
