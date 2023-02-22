@@ -77,6 +77,7 @@ app.post("/api/group/join", (req, res) => {
 			name: user.name,
 			isOwner: false,
 		};
+		console.log("trigger add user");
 		pusher.trigger(group.id, "add-user", {
 			message: store[group.id],
 		});

@@ -1,6 +1,6 @@
 // import styles from "../styles/Home.module.css";
-import "../styles/globals.css";
 import "../styles/bonkr.css";
+import "../styles/globals.css";
 import { store } from "../app/store";
 import type { AppProps } from "next/app";
 

@@ -35,11 +35,8 @@ const createGroup = async function (user: IUser): Promise<IReturn> {
 
 	// const { user, group } = res;
 	const rtn: IReturn = res;
-	const url = new URL(window.location.href);
-	url.searchParams.set("group", rtn.group.id);
-	const urlStr = url.toString();
-
-	const msg = await share(urlStr);
+	const url = `${window.location.href}group/${rtn.group.id}`;
+	const msg = await share(url);
 	rtn.msg = msg;
 
 	return rtn;

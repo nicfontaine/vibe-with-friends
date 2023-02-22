@@ -1,19 +1,21 @@
 import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { useAppSelector } from "../app/store";
+import { setStatusMsg } from "../feature/statusSlice";
 
-interface IProps {
-	statusMsg: string;
-	setStatusMsg: (val: string) => void;
-}
-
-const StatusMsg = function ({ statusMsg, setStatusMsg }: IProps) {
+const StatusMsg = function () {
+	
+	const dispatch = useDispatch();
+	const statusStore = useAppSelector((state) => state.status);
+	
 	useEffect(() => {
 		setTimeout(() => {
-			setStatusMsg("");
+			dispatch(setStatusMsg(""));
 		}, 4000);
-	}, [statusMsg]);
+	}, [statusStore.text]);
 
 	return (
-		<div className={`status-msg ${statusMsg ? "show" : ""}`}>{statusMsg}</div>
+		<div className={`status-msg ${statusStore.text ? "show" : ""}`}>{statusStore.text}</div>
 	);
 };
 

@@ -8,34 +8,45 @@ import { useRouter } from "next/router";
 import SyncPlayer from "../util/sync-player";
 import * as PusherTypes from "pusher-js";
 import { IRPusherAddUser, IRPusherChangeUserName, IRPusherPlayTap } from "../interfaces/types-pusher-return";
+import { setStatusMsg } from "../feature/statusSlice";
 
 interface IProps {
-	setStatusMsg: (val: string) => void;
 	size?: string;
 	text?: string;
 	pusher: PusherTypes.default;
 }
 
-const BtnCreateGroup = function ({ setStatusMsg, size, text, pusher }: IProps) {
+const BtnCreateGroup = function ({ size, text, pusher }: IProps) {
+	//
 	const dispatch = useAppDispatch();
 	const router = useRouter();
 	const userStore = useAppSelector((state) => state.user);
 
 	const handleCreateGroup = async function (e: MouseEvent<HTMLButtonElement>) {
+		//
 		if (e.target !== null) {
 			(e.target as HTMLButtonElement).blur();
 		}
 		const res = await createGroup(userStore);
 		const { user, group } = res;
+		batch(() => {
+			dispatch(setUser(user));
+			dispatch(setGroup(group));
+		});
+		console.log("Group created");
 
 		pusher.subscribe(group.id);
+		// TODO: Cleanup
 		pusher.bind("add-user", (data: IRPusherAddUser) => {
+			console.log("user added");
 			dispatch(setGroupUsers(data.message.users));
 		});
 		pusher.bind("change-username", (data: IRPusherChangeUserName) => {
+			console.log("change username");
 			dispatch(setGroupUsers(data.message.users));
 		});
 		pusher.bind("play-tap-on", (data: IRPusherPlayTap) => {
+			console.log("play tap on");
 			dispatch(setGroupUserPlaying({ userID: data.message.id, val: true }));
 			SyncPlayer.on(Infinity);
 		});
@@ -43,17 +54,13 @@ const BtnCreateGroup = function ({ setStatusMsg, size, text, pusher }: IProps) {
 			dispatch(setGroupUserPlaying({ userID: data.message.id, val: false }));
 			SyncPlayer.off();
 		});
-
-		batch(() => {
-			dispatch(setUser(user));
-			dispatch(setGroup(group));
-		});
-		router.push({
-			query: { ...router.query, group: group.id },
-		});
+		
 		if (res.msg) {
-			setStatusMsg(res.msg);
+			dispatch(setStatusMsg(res.msg));
 		}
+		const gid = group.id;
+		router.push({ pathname: "/group/[gid]", query: { gid: group.id } });
+
 	};
 
 	return (
