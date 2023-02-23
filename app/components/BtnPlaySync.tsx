@@ -32,7 +32,7 @@ const BtnPlaySync = function () {
 		// setIsRunning(false);
 	};
 
-	const btnShow = userStore.isOwner && groupStore.id ? "show" : "";
+	const btnShow = userStore.isOwner && groupStore.id ? "show" : "hide";
 
 	return (
 		<button

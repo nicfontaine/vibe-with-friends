@@ -35,7 +35,7 @@ const Home = function () {
 				<div className="button-container center d-flx flx-col">
 					{!groupStore.id.length && (
 						<BtnCreateGroup
-							size="large"
+							size="large-2"
 						></BtnCreateGroup>
 					)}
 					<button

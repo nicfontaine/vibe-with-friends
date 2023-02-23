@@ -112,7 +112,11 @@ button:hover, button:focus {
 } */
 .btn-large {
 	font-size: 1.2rem;
-	padding: 0.7rem 1rem;
+	padding: 0.7rem 1.1rem;
+}
+.btn-large-2 {
+	font-size: 1.4rem;
+	padding: 1rem 1.4rem;
 }
 .btn-ul {
 	text-decoration: underline;
@@ -137,6 +141,9 @@ button:hover, button:focus {
 	cursor: pointer;
 	align-self: center;
 	/* margin-left: auto; */
+}
+.button-container .hide {
+	display: none;
 }
 .btn-border {
 	background: rgba(0, 0, 0, 0.2);
