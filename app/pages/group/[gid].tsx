@@ -1,10 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, batch } from "react-redux";
 import { useRouter } from "next/router";
 import NavMain from "../../components/NavMain";
-import * as PusherTypes from "pusher-js";
 import UserNameDialog from "../../components/UserNameDialog";
-import { setDialogJoinGroup, setDialogUserName } from "../../feature/dialogSlice";
+import { setDialogUserName } from "../../feature/dialogSlice";
 import { useAppSelector } from "../../app/store";
 import joinGroup from "../../util/join-group";
 import { deleteGroup, setGroup, setGroupUserPlaying, setGroupUsers } from "../../feature/groupSlice";
@@ -16,12 +15,16 @@ import { ISheet } from "../../interfaces/types";
 import JoinGroupDialog from "../../components/JoinGroupDialog";
 import UsersGrid from "../../components/UsersGrid";
 import BtnPlayTap from "../../components/BtnPlayTap";
+import BtnCreateGroup from "../../components/BtnCreateGroup";
+import BtnPlaySync from "../../components/BtnPlaySync";
+import Pusher from "pusher-js";
+// import * as PusherTypes from "pusher-js";
+// Pusher.logToConsole = true;
+const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY as string, {
+	cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER as string,
+});
 
-interface IProps {
-	pusher: PusherTypes.default;
-}
-
-const Group = function ({ pusher }: IProps) {
+const Group = function () {
 
 	const dispatch = useDispatch();
 	const router = useRouter();
@@ -30,12 +33,17 @@ const Group = function ({ pusher }: IProps) {
 	const userStore = useAppSelector((state) => state.user);
 	const groupStore = useAppSelector((state) => state.group);
 
+	const [isTapPlaying, setIsTapPlaying] = useState(false);
+
 	useEffect(() => {
-		return () => {
-			pusher.unbind();
-			pusher.unsubscribe(groupStore.id);
-			pusher.disconnect();
-		};
+		// pusher.unbind();
+		// pusher.unsubscribe(groupStore.id);
+		// pusher.disconnect();
+		// return () => {
+		// 	pusher.unbind();
+		// 	pusher.unsubscribe(groupStore.id);
+		// 	pusher.disconnect();
+		// };
 	}, []);
 	
 	useEffect(() => {
@@ -44,16 +52,12 @@ const Group = function ({ pusher }: IProps) {
 			dispatch(setDialogUserName(true));
 			return;
 		}
-		// if (!userStore.isOwner) {
-		console.log("join");
 		join(gid.toString());
-		// }
 	}, [gid]);
 
 	useEffect(() => {
 		if (userStore.name) {
 			if (gid && !groupStore.id) {
-				console.log("join");
 				join(gid.toString());
 			}
 		}
@@ -74,34 +78,33 @@ const Group = function ({ pusher }: IProps) {
 			dispatch(setGroup(group));
 		});
 
-		pusher.subscribe(group.id);
+		const channel = pusher.subscribe(group.id);
+
 		// TODO: Cleanup
-		pusher.bind("add-user", (data: IRPusherAddUser) => {
+		channel.bind("add-user", (data: IRPusherAddUser) => {
 			console.log("add user");
 			dispatch(setGroupUsers(data.message.users));
 		});
-		pusher.bind("change-username", (data: IRPusherChangeUserName) => {
+		channel.bind("change-username", (data: IRPusherChangeUserName) => {
 			console.log("change username");
 			dispatch(setGroupUsers(data.message.users));
 		});
-		pusher.bind("play-tap-on", (data: IRPusherPlayTap) => {
+		channel.bind("play-tap-on", (data: IRPusherPlayTap) => {
 			console.log("play tap on");
 			if (data.message.id !== user.id) {
 				dispatch(setGroupUserPlaying({ userID: data.message.id, val: true }));
 				SyncPlayer.on(Infinity);
 			}
 		});
-		pusher.bind("play-tap-off", (data: IRPusherPlayTap) => {
+		channel.bind("play-tap-off", (data: IRPusherPlayTap) => {
 			if (data.message.id !== user.id) {
 				dispatch(setGroupUserPlaying({ userID: data.message.id, val: false }));
 				SyncPlayer.off();
 			}
 		});
-		if (!user.isOwner) {
-			pusher.bind("play-sync", (data: IRPusherPlaySync) => {
-				player(data.message);
-			});
-		}
+		channel.bind("play-sync", (data: IRPusherPlaySync) => {
+			player(data.message);
+		});
 	};
 
 	const player = async (sheet: ISheet): Promise<void> => {
@@ -110,9 +113,26 @@ const Group = function ({ pusher }: IProps) {
 
 	return (
 		<>
-			<NavMain pusher={pusher} />
-			<UsersGrid />
-			<BtnPlayTap />
+			<NavMain />
+			
+			<UsersGrid
+				isTapPlaying={isTapPlaying}
+			/>
+
+			<div className="main-bottom">
+				<div className="hide-larger-med">
+					<div className="d-flx button-container">
+						<BtnCreateGroup
+							size="med"
+							text="New Group"
+						></BtnCreateGroup>
+						<BtnPlaySync></BtnPlaySync>
+					</div>
+				</div>
+				<BtnPlayTap
+					setIsTapPlaying={setIsTapPlaying}
+				/>
+			</div>
 
 			<UserNameDialog maxWidth={250} />
 			<JoinGroupDialog maxWidth={350} />

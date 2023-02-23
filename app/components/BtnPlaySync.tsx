@@ -4,6 +4,7 @@ import sheets from "../util/sheets";
 import { useAppSelector } from "../app/store";
 import SyncPlayer from "../util/sync-player";
 import { ISheet } from "../interfaces/types";
+import { FaPlayCircle } from "react-icons/fa";
 
 const BtnPlaySync = function () {
 	//
@@ -14,10 +15,8 @@ const BtnPlaySync = function () {
 	const [isRunning, setIsRunning] = useState(false);
 
 	const player = async (sheet: ISheet): Promise<void> => {
-		if (isRunning) return;
-		setIsRunning(true);
-		const text = playerBoxRef.current?.innerHTML || "";
-		//
+		// if (isRunning) return;
+		// setIsRunning(true);
 		fetch("/api/group/play-sync", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
@@ -26,21 +25,25 @@ const BtnPlaySync = function () {
 				sheet,
 			}),
 		});
-		await SyncPlayer.play(sheet);
-		if (playerBoxRef.current !== null) {
-			playerBoxRef.current.innerHTML = text;
-		}
-		setIsRunning(false);
+		// await SyncPlayer.play(sheet);
+		// if (playerBoxRef.current !== null) {
+		// 	playerBoxRef.current.innerHTML = text;
+		// }
+		// setIsRunning(false);
 	};
+
+	const btnShow = userStore.isOwner && groupStore.id ? "show" : "";
 
 	return (
 		<button
 			ref={playerBoxRef}
-			className={`player-box btn-med btn-border mg-r-4
-			${userStore.isOwner && groupStore.id ? "show" : ""}`}
+			className={`btn-med btn-clear ${btnShow}`}
 			onClick={() => player(sheets.jingle)}
 		>
-			<span>Play Sync</span>
+			<span className="icon d-flx mg-r-2">
+				<FaPlayCircle />
+			</span>
+			<span className="text">Play Sync</span>
 		</button>
 	);
 };

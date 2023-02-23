@@ -9,9 +9,11 @@ const StatusMsg = function () {
 	const statusStore = useAppSelector((state) => state.status);
 	
 	useEffect(() => {
-		setTimeout(() => {
-			dispatch(setStatusMsg(""));
-		}, 4000);
+		if (statusStore.text) {
+			setTimeout(() => {
+				dispatch(setStatusMsg(""));
+			}, 4000);
+		}
 	}, [statusStore.text]);
 
 	return (

@@ -73,7 +73,11 @@ const JoinGroupDialog = function ({ maxWidth }: IProps) {
 									value={val}
 									onChange={handle.change}
 									onKeyDown={handle.keyDown}
+									autoCapitalize="none"
+									autoComplete="off"
+									autoCorrect="off"
 									autoFocus
+									placeholder="customGroupCode"
 								></input>
 								<button
 									onClick={handle.submit}

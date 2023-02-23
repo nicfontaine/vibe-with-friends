@@ -8,16 +8,13 @@ import { useAppSelector } from "../app/store";
 import { batch, useDispatch } from "react-redux";
 import { setUserIsOwner } from "../feature/userSlice";
 import { deleteGroup } from "../feature/groupSlice";
-import * as PusherTypes from "pusher-js";
 import { setDialogUserName } from "../feature/dialogSlice";
 import { HiOutlineUserGroup } from "react-icons/hi";
 import StatusMsg from "./StatusMsg";
+import copyToClipboard from "../util/copy-to-clipboard";
+import { setStatusMsg } from "../feature/statusSlice";
 
-interface IProps {
-	pusher: PusherTypes.default;
-}
-
-const NavMain = function ({ pusher }: IProps) {
+const NavMain = function () {
 
 	const dispatch = useDispatch();
 	const router = useRouter();
@@ -36,6 +33,11 @@ const NavMain = function ({ pusher }: IProps) {
 		dispatch(setDialogUserName(true));
 	};
 
+	const handleGroupCopy = function (): void {
+		copyToClipboard(groupStore.id);
+		dispatch(setStatusMsg("Copied Group Name"));
+	};
+
 	return (
 		<>
 			
@@ -44,15 +46,19 @@ const NavMain = function ({ pusher }: IProps) {
 			<nav className="nav-main">
 
 				<div className="button-container left">
-					<button onClick={handleButtonHome} className="nav-btn nav-icon-home mg-r-4">
+					<button
+						onClick={handleButtonHome}
+						className="nav-btn nav-icon-home"
+					>
 						<AiOutlineHome className="icon-main" size="45" />
 					</button>
 					{groupStore.id.length ? (
-						<BtnCreateGroup
-							size="med"
-							text="New Group"
-							pusher={pusher}
-						></BtnCreateGroup>
+						<div className="hide-smaller-med align-center mg-l-4">
+							<BtnCreateGroup
+								size="med"
+								text="New Group"
+							></BtnCreateGroup>
+						</div>
 					) : null}
 				</div>
 					
@@ -63,13 +69,18 @@ const NavMain = function ({ pusher }: IProps) {
 							<span className="icon mg-r-2 d-flx flx-items-ctr">
 								<HiOutlineUserGroup size="20"></HiOutlineUserGroup>
 							</span>
-							<div className="group">{groupStore.id}</div>
+							<div
+								className="group"
+								onClick={handleGroupCopy}
+							>{groupStore.id}</div>
 						</div>
 					)}
 				</div>
 
 				<div className="button-container right">
-					<BtnPlaySync></BtnPlaySync>
+					<div className="hide-smaller-med align-center mg-r-4">
+						<BtnPlaySync></BtnPlaySync>
+					</div>
 					<button onClick={handleButtonUser} className="nav-btn nav-icon-user">
 						{userStore.isOwner == true ? (
 							<RiAdminLine className="icon-main" size="45" />
