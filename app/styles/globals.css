@@ -7,14 +7,14 @@ body {
 }
 
 html {
-	background: linear-gradient(10deg,#4a1e4e,#2f164e);
+	background: linear-gradient(10deg,#511f55,#2d134d);
 	min-height: 100vh;
 	color: #eee;
 	transition: background 0.03s;
 	font-size: 17px;
 }
 html.play-sync-on {
-	background: linear-gradient(10deg, #9839b2, #332b84);
+	background: linear-gradient(10deg, #9839b2, #2c2577);
 }
 
 :root {

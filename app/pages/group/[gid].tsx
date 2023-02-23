@@ -44,6 +44,9 @@ const Group = function () {
 		// 	pusher.unsubscribe(groupStore.id);
 		// 	pusher.disconnect();
 		// };
+		return () => {
+			console.log("[gid] unmount");
+		};
 	}, []);
 	
 	useEffect(() => {
@@ -82,15 +85,12 @@ const Group = function () {
 
 		// TODO: Cleanup
 		channel.bind("add-user", (data: IRPusherAddUser) => {
-			console.log("add user");
 			dispatch(setGroupUsers(data.message.users));
 		});
 		channel.bind("change-username", (data: IRPusherChangeUserName) => {
-			console.log("change username");
 			dispatch(setGroupUsers(data.message.users));
 		});
 		channel.bind("play-tap-on", (data: IRPusherPlayTap) => {
-			console.log("play tap on");
 			if (data.message.id !== user.id) {
 				dispatch(setGroupUserPlaying({ userID: data.message.id, val: true }));
 				SyncPlayer.on(Infinity);
