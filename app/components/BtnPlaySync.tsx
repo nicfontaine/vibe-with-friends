@@ -2,12 +2,18 @@ import { useState } from "react";
 import { useRef } from "react";
 import sheets from "../util/sheets";
 import { useAppSelector } from "../app/store";
-import SyncPlayer from "../util/sync-player";
 import { ISheet } from "../interfaces/types";
 import { FaPlayCircle } from "react-icons/fa";
+import { playSync } from "../util/play-sync";
+import { useDispatch } from "react-redux";
+import { deleteGroup } from "../feature/groupSlice";
+import { setStatusMsg } from "../feature/statusSlice";
+import { useRouter } from "next/router";
 
 const BtnPlaySync = function () {
 	//
+	const dispatch = useDispatch();
+	const router = useRouter();
 	const userStore = useAppSelector((state) => state.user);
 	const groupStore = useAppSelector((state) => state.group);
 
@@ -15,21 +21,17 @@ const BtnPlaySync = function () {
 	const [isRunning, setIsRunning] = useState(false);
 
 	const player = async (sheet: ISheet): Promise<void> => {
-		// if (isRunning) return;
-		// setIsRunning(true);
-		fetch("/api/group/play-sync", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
-				gid: groupStore.id,
-				sheet,
-			}),
-		});
-		// await SyncPlayer.play(sheet);
-		// if (playerBoxRef.current !== null) {
-		// 	playerBoxRef.current.innerHTML = text;
-		// }
-		// setIsRunning(false);
+		if (isRunning) return;
+		setIsRunning(true);
+		const res = await playSync(groupStore.id, sheet);
+		if (res.err) {
+			dispatch(deleteGroup(groupStore.id));
+			dispatch(setStatusMsg(res.err));
+			router.push("/", undefined, { shallow: true });
+			return;
+		}
+		// const { start } = res;
+		setIsRunning(false);
 	};
 
 	const btnShow = userStore.isOwner && groupStore.id ? "show" : "hide";

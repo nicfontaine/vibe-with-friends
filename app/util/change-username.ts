@@ -3,6 +3,7 @@ import { IUser, IGroup } from "../interfaces/types";
 interface IReturn {
 	user: IUser;
 	group: IGroup;
+	err?: string;
 }
 
 const changeUserName = async function (

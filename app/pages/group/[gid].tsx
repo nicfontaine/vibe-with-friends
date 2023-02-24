@@ -70,9 +70,9 @@ const Group = function () {
 		//
 		const res = await joinGroup(userStore, gid);
 		if (res.err) {
-			router.push("/", undefined, { shallow: true });
 			dispatch(deleteGroup(gid));
 			dispatch(setStatusMsg(res.err));
+			router.push("/", undefined, { shallow: true });
 			return;
 		}
 		const { user, group } = res;
@@ -103,7 +103,13 @@ const Group = function () {
 			}
 		});
 		channel.bind("play-sync", (data: IRPusherPlaySync) => {
-			player(data.message);
+			const { start } = data.message;
+			const delta = (new Date(start)).getTime() - Date.now();
+			// console.log(`Start: ${data.message.start}`);
+			console.log(`Running in ${delta} ms, at ${start}`);
+			setTimeout(() => {
+				player(data.message.sheet);
+			}, delta);
 		});
 	};
 

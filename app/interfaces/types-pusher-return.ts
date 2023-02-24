@@ -22,7 +22,10 @@ interface IRPusherPlayTap {
 }
 
 interface IRPusherPlaySync {
-	message: ISheet
+	message: {
+		start: string;
+		sheet: ISheet;
+	}
 }
 
 export type {

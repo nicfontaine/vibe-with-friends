@@ -5,7 +5,9 @@ import { setUserName } from "../feature/userSlice";
 import changeUserName from "../util/change-username";
 import { RiSendPlane2Fill } from "react-icons/ri";
 import { setDialogUserName } from "../feature/dialogSlice";
-import { setGroupUsers } from "../feature/groupSlice";
+import { deleteGroup, setGroupUsers } from "../feature/groupSlice";
+import { setStatusMsg } from "../feature/statusSlice";
+import { useRouter } from "next/router";
 
 interface IProps {
 	maxWidth?: number;
@@ -14,6 +16,7 @@ interface IProps {
 const UserNameDialog = function ({ maxWidth }: IProps) {
 
 	const dispatch = useDispatch();
+	const router = useRouter();
 	const inputRef = useRef<HTMLInputElement>(null);
 	const containerRef = useRef<HTMLDivElement>(null);
 	const userStore = useAppSelector((state) => state.user);
@@ -32,6 +35,12 @@ const UserNameDialog = function ({ maxWidth }: IProps) {
 	const updateUserName = async function (): Promise<void> {
 		const res = await changeUserName(userStore, groupStore);
 		const { user, group } = res;
+		if (res.err) {
+			dispatch(deleteGroup(group.id));
+			dispatch(setStatusMsg(res.err));
+			router.push("/", undefined, { shallow: true });
+			return;
+		}
 		dispatch(setGroupUsers(group.users));
 		if (inputRef.current !== null) {
 			inputRef.current.blur();

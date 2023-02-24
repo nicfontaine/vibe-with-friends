@@ -2,6 +2,10 @@ import { MouseEvent, TouchEvent, useEffect, useRef, useCallback } from "react";
 import { useAppSelector } from "../app/store";
 import { MdOutlineSendToMobile } from "react-icons/md";
 import { playTapOn, playTapOff } from "../util/play-tap";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/router";
+import { deleteGroup } from "../feature/groupSlice";
+import { setStatusMsg } from "../feature/statusSlice";
 
 interface IProps {
 	setIsTapPlaying: (value: boolean) => void;
@@ -10,31 +14,52 @@ interface IProps {
 const BtnPlayTap = function ({ setIsTapPlaying }: IProps) {
 
 	const btnRef = useRef<HTMLDivElement>(null);
+	const dispatch = useDispatch();
+	const router = useRouter();
 
 	useEffect(() => {
 		// Only works, for mobile, by adding later
 		btnRef.current?.addEventListener("touchstart", handleTouchStart, { passive: false });
 	}, [btnRef.current]);
+
+	const playOn = async function () {
+		btnOn();
+		const res = await playTapOn(user, group);
+		if (res.err) {
+			dispatch(deleteGroup(group.id));
+			dispatch(setStatusMsg(res.err));
+			router.push("/", undefined, { shallow: true });
+			return;
+		}
+	};
+
+	const playOff = async function () {
+		btnOff();
+		const res = await playTapOff(user, group);
+		if (res.err) {
+			dispatch(deleteGroup(group.id));
+			dispatch(setStatusMsg(res.err));
+			router.push("/", undefined, { shallow: true });
+			return;
+		}
+	};
 	
 	const user = useAppSelector((state) => state.user);
 	const group = useAppSelector((state) => state.group);
 
 	const handleMouseStart = async function (e: MouseEvent<HTMLElement>) {
-		btnOn();
-		await playTapOn(user, group);
+		playOn();
 	};
 	const handleMouseEnd = async function (e: MouseEvent<HTMLElement>) {
-		btnOff();
-		await playTapOff(user, group);
+		playOff();
 	};
 	const handleTouchStart = async function (e: Event) {
 		e.preventDefault();
-		btnOn();
-		await playTapOn(user, group);
+		playOn();
 	};
 	const handleTouchEnd = async function () {
 		btnOff();
-		await playTapOff(user, group);
+		playOff();
 	};
 	const handleContextMenu = function (e: MouseEvent<HTMLElement>) {
 		e.preventDefault();
