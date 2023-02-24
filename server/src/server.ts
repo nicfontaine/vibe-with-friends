@@ -12,9 +12,7 @@ dotenv.config();
 const PORT = process.env.PORT || 3680;
 
 const startServer = async function () {
-	//
 	await mongoose.connect(process.env.MONGO_URL as string);
-
 	const httpServer = http.createServer(app);
 	const server = new ApolloServer({
 		typeDefs,
@@ -23,11 +21,9 @@ const startServer = async function () {
 	});
 	await server.start();
 	app.use(expressMiddleware(server));
-
 	httpServer.listen(PORT, () => {
-		console.log(`Server listening on port ${PORT}`);
+		console.log(`Server listening on port ${PORT}`); 
 	});
-	//
 };
 
 startServer();

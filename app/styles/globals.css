@@ -151,6 +151,7 @@ button:hover, button:focus {
 }
 .btn-clear {
 	background: rgba(255, 255, 255, 0.1);
+	box-shadow: 0 3px 10px rgba(15, 28, 55, 0.2);
 }
 .btn-green {
 	background: var(--main-ui-color-green);

@@ -4,40 +4,39 @@ const typeDefs = `#graphql
 
 	# Types
 	type Group {
-		id: String
+		id: ID
+		name: String
 		ownerID: String
 		lastEvent: DateTime
+		users: [GroupUser]
 	}
-
 	type GroupUser {
+		uid: String
 		name: String
 		isOwner: Boolean
 	}
 
-	# Inputs
-	input CreateGroupInput {
-		id: ID!
+	# Group Input
+	input GroupInput {
+		name: String!
 		ownerID: String!
 		lastEvent: DateTime!
+		users: [GroupUserInput]
 	}
 	input DeleteGroupInput {
 		id: ID!
 	}
 
-	input AddGroupUserInput {
-		id: ID!
+	# GroupUser Input
+	input GroupUserInput {
 		uid: ID!
 		name: String!
 		isOwner: Boolean!
 	}
-
 	input DeleteGroupUserInput {
 		id: ID!
-		uid: ID!
 	}
-
-	input SetGroupUserNameInput {
-		id: String!
+	input GroupUserNameInput {
 		uid: ID!
 		name: String!
 	}
@@ -45,13 +44,23 @@ const typeDefs = `#graphql
 	# Queries
 	type Query {
 		hello: String
-		group(ID: ID!): Group!
-		deleteGroup(ID: ID!): Int!
+		# Group
+		group(ID: ID!): Group
+		allGroups: [Group]
+		# Group User
+		groupUser(ID: ID!, UID: ID!): GroupUser
+		users: [GroupUser]
 	}
 
 	# Mutations
 	type Mutation {
-		createGroup(createGroupInput: CreateGroupInput): Group!
+		# Group
+		createGroup(group: GroupInput): Group!
+		deleteGroup(ID: ID!): String!
+		# Group User
+		createGroupUser(ID: ID!, user: GroupUserInput!): Group!
+		deleteGroupUser(ID: ID!): String!
+		setGroupUserName(ID: ID!, user: GroupUserNameInput!): Group!
 	}
 
 `;

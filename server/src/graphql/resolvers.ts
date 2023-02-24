@@ -1,15 +1,56 @@
-import { ObjectId } from "mongodb";
+import { ObjectId } from "mongoose";
 import Group from "../models/Group";
-import { IUser, IGroup, IGroupUser, IStore, ISheet } from "../types";
+interface OID {
+	ID: ObjectId;
+}
 
 const resolvers = {
+
 	Query: {
+
 		hello: () => "Hello",
-		async deleteGroup (parent: any, id: ObjectId) {
-			const wasDeleted = (await Group.deleteOne({ _id: id })).deletedCount;
-			return wasDeleted;
+
+		allGroups: async () => {
+			return await Group.find();
 		},
+
+		async groupUser (_: any, args: any) {
+			const group = await Group.findById(args.ID);
+			if (!group) return null;
+			const user = group.users.find((e) => e.uid === args.UID);
+			return user;
+		},
+
 	},
+
+	Mutation: {
+
+		async createGroup (_: any, args: any) {
+			const { name, ownerID, lastEvent, users } = args.group;
+			const group = new Group({ name, ownerID, lastEvent, users });
+			await group.save();
+			return group;
+		},
+		
+		async deleteGroup (_: any, { ID }: OID) {
+			await Group.findByIdAndDelete(ID);
+			return `Deleted: ${ID}`;
+		},
+
+		async createGroupUser (_: any) {
+
+		},
+
+		async deleteGroupUser () {
+
+		},
+
+		async setGroupUserName () {
+
+		},
+
+	},
+
 };
 
 export default resolvers;

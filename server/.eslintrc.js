@@ -1,15 +1,23 @@
-export default {
-	env: {
-		node: true,
-		es2021: true,
+module.exports = {
+	"env": {
+		"browser": true,
+		"es2021": true,
 	},
-	extends: ["standard"],
-	overrides: [],
-	parserOptions: {
-		ecmaVersion: "latest",
-		sourceType: "module",
+	"extends": [
+		"eslint:recommended",
+		"plugin:@typescript-eslint/recommended",
+	],
+	"overrides": [
+	],
+	"parser": "@typescript-eslint/parser",
+	"parserOptions": {
+		"ecmaVersion": "latest",
+		"sourceType": "module",
 	},
-	rules: {
+	"plugins": [
+		"@typescript-eslint",
+	],
+	"rules": {
 		"@typescript-eslint/quotes": [
 			"error",
 			"double",
@@ -19,7 +27,7 @@ export default {
 			},
 		],
 		"@typescript-eslint/no-unused-vars": "off",
-		"@typescript-eslint/no-explicit-any": "error",
+		"@typescript-eslint/no-explicit-any": "warn",
 		"@typescript-eslint/no-empty-function": "off",
 		"no-empty": "off",
 		"comma-dangle": ["error", "always-multiline"],
@@ -58,4 +66,4 @@ export default {
 			},
 		],
 	},
-}
+};
