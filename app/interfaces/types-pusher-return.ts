@@ -16,7 +16,7 @@ interface IRPusherAddUser {
 
 interface IRPusherPlayTap {
 	message: {
-		id: string;
+		uid: string;
 		val: boolean;
 	}
 }

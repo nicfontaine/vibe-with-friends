@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IUser } from "../interfaces/types";
 
 const initialState: IUser = {
-	id: "",
+	uid: "",
 	name: "",
 	isOwner: false,
 };
@@ -12,12 +12,12 @@ export const userSlice = createSlice({
 	initialState,
 	reducers: {
 		setUser: (state, action) => {
-			state.id = action.payload.id;
+			state.uid = action.payload.uid;
 			state.isOwner = action.payload.isOwner;
 			state.name = action.payload.name;
 		},
 		setUserID: (state, action) => {
-			state.id = action.payload;
+			state.uid = action.payload;
 		},
 		setUserName: (state, action) => {
 			state.name = action.payload;

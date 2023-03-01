@@ -91,14 +91,14 @@ const Group = function () {
 			dispatch(setGroupUsers(data.message.users));
 		});
 		channel.bind("play-tap-on", (data: IRPusherPlayTap) => {
-			if (data.message.id !== user.id) {
-				dispatch(setGroupUserPlaying({ userID: data.message.id, val: true }));
+			if (data.message.uid !== user.uid) {
+				dispatch(setGroupUserPlaying({ uid: data.message.uid, val: true }));
 				SyncPlayer.on(Infinity);
 			}
 		});
 		channel.bind("play-tap-off", (data: IRPusherPlayTap) => {
-			if (data.message.id !== user.id) {
-				dispatch(setGroupUserPlaying({ userID: data.message.id, val: false }));
+			if (data.message.uid !== user.uid) {
+				dispatch(setGroupUserPlaying({ uid: data.message.uid, val: false }));
 				SyncPlayer.off();
 			}
 		});

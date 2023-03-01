@@ -14,6 +14,11 @@ const resolvers = {
 			return await Group.find();
 		},
 
+		async group (_: any, args: any) {
+			const group = await Group.findById(args.ID);
+			return group;
+		},
+
 		async groupUser (_: any, args: any) {
 			const group = await Group.findById(args.ID);
 			if (!group) return null;

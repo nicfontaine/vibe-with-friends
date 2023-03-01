@@ -4,7 +4,7 @@ import { IGroup, IGroupUser } from "../interfaces/types";
 const initialState: IGroup = {
 	id: "",
 	ownerID: "",
-	users: {},
+	users: [],
 };
 
 export const groupSlice = createSlice({
@@ -27,21 +27,16 @@ export const groupSlice = createSlice({
 		setGroupOwner: (state, action) => {
 			state.ownerID = action.payload;
 		},
-		addGroupUser: (state, action) => {
-			state.users[action.payload.userID] = {
-				...state.users[action.payload.userID],
-				name: action.payload.userName,
-			};
-		},
 		setGroupUsers: (state, action) => {
 			state.users = action.payload;
 		},
 		setGroupUserPlaying: (state, action) => {
-			state.users[action.payload.userID].playing = action.payload.val;
+			const user = state.users.find((u) => u.uid === action.payload.uid);
+			if (user) user.playing = action.payload.val;
 		},
 	},
 });
 
-export const { setGroup, setGroupID, deleteGroup, setGroupOwner, addGroupUser, setGroupUsers, setGroupUserPlaying } = groupSlice.actions;
+export const { setGroup, setGroupID, deleteGroup, setGroupOwner, setGroupUsers, setGroupUserPlaying } = groupSlice.actions;
 
 export default groupSlice.reducer;

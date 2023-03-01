@@ -13,16 +13,16 @@ const UsersGrid = function ({ isTapPlaying }: IProps) {
 	return (
 		<>
 			<div className="pd-t-8 user-grid">
-				{group.users && Object.keys(group.users).map((u) => {
-					const isPlaying = group.users[u].playing ? "playing" : "";
-					const isUser = u === user.id ? "user" : "";
-					const styleTapPlay = isTapPlaying && u === user.id ? "tap-play-on" : "";
+				{group.users && group.users.map((u) => {
+					const isPlaying = u.playing ? "playing" : "";
+					const isUser = u.uid === user.uid ? "user" : "";
+					const styleTapPlay = isTapPlaying && u.uid === user.uid ? "tap-play-on" : "";
 					return (
 						<div
-							key={u}
+							key={u.uid}
 							className={`user-grid-block ${isUser} ${isPlaying} ${styleTapPlay}`}
 						>
-							<div className="name">{group.users[u].name}</div>
+							<div className="name">{u.name}</div>
 							{!isUser &&
 								<div className="icon">
 									<VscGlobe size={20} />

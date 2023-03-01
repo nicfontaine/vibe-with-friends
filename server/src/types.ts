@@ -1,19 +1,18 @@
 type IUser = {
-	id: string;
+	uid: string;
 	name: string;
 	isOwner: boolean;
 };
 type IGroupUser = {
-	[key: string]: {
-		name: string;
-		isOwner: boolean;
-	};
+	uid: string;
+	name: string;
+	isOwner: boolean;
 };
 type IGroup = {
 	id: string;
 	ownerID: string;
 	lastEvent: number;
-	users: IGroupUser;
+	users: IGroupUser[];
 };
 type IStore = {
 	[key: string]: IGroup;

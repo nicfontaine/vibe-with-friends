@@ -1,20 +1,19 @@
 interface IUser {
-	id: string;
+	uid: string;
 	name: string;
 	isOwner: boolean;
 }
 
 interface IGroupUser {
-	[key: string]: {
-		name: string;
-		playing: boolean;
-	}
+	uid: string;
+	name: string;
+	playing: boolean;
 }
 
 interface IGroup {
 	id: string,
 	ownerID: string;
-	users: IGroupUser;
+	users: IGroupUser[];
 }
 
 interface ISheet {
