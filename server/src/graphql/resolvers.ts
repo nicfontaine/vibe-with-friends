@@ -42,6 +42,15 @@ const resolvers = {
 			return `Deleted: ${ID}`;
 		},
 
+		async groupEvent (_: any, { ID }: OID) {
+			const group = await Group.findById(ID);
+			if (group) {
+				group.lastEvent = Date.now();
+				group.save();
+			}
+			return group;
+		},
+
 		async createGroupUser (_: any) {
 
 		},

@@ -57,6 +57,7 @@ const typeDefs = `#graphql
 		# Group
 		createGroup(group: GroupInput): Group!
 		deleteGroup(ID: ID!): String!
+		groupEvent(ID: ID!): Group
 		# Group User
 		createGroupUser(ID: ID!, user: GroupUserInput!): Group!
 		deleteGroupUser(ID: ID!): String!
