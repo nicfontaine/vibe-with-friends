@@ -10,8 +10,10 @@
 		"lint": "next lint"
 	},
 	"dependencies": {
+		"@apollo/client": "^3.7.9",
 		"@reduxjs/toolkit": "^1.9.2",
 		"clipboard": "^2.0.10",
+		"graphql": "^16.6.0",
 		"namor": "^2.0.3",
 		"nanoid": "^3.3.3",
 		"next": "12.1.5",

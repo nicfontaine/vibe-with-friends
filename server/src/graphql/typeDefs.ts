@@ -11,6 +11,7 @@ const typeDefs = `#graphql
 		users: [GroupUser]
 	}
 	type GroupUser {
+		id: ID
 		uid: String
 		name: String
 		isOwner: Boolean

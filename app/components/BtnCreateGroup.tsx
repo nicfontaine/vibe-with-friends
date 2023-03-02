@@ -34,7 +34,7 @@ const BtnCreateGroup = function ({ size, text }: IProps) {
 	return (
 		<button
 			onClick={handleCreateGroup}
-			className={`btn-${size || "med"} btn-clear`}
+			className={`btn-main btn-${size || "med"} btn-clear`}
 		>
 			<span className="icon mg-r-2 d-flx">
 				<AiOutlineAppstoreAdd />

@@ -1,9 +1,9 @@
 import { ISheet } from "../interfaces/types";
 
-class SyncPlayer {
+class VibePlayer {
 
 	static async play (sheet: ISheet) {
-		SyncPlayer.off();
+		VibePlayer.off();
 		const multiplier = 120 / sheet.bpm;
 		const timer = function (ms: number) {
 			return new Promise((resolve) => setTimeout(resolve, ms));
@@ -12,7 +12,7 @@ class SyncPlayer {
 		for (const dur of sheet.song) {
 			const t = dur * multiplier;
 			const active = i % 2 === 0;
-			active ? SyncPlayer.on(t) : SyncPlayer.off();
+			active ? VibePlayer.on(t) : VibePlayer.off();
 			i++;
 			await timer(t);
 		}
@@ -31,4 +31,4 @@ class SyncPlayer {
 
 }
 
-export default SyncPlayer;
+export default VibePlayer;

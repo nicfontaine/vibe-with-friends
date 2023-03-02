@@ -10,7 +10,7 @@ import { deleteGroup, setGroup, setGroupUserPlaying, setGroupUsers } from "../..
 import { setUser } from "../../feature/userSlice";
 import { IRPusherAddUser, IRPusherChangeUserName, IRPusherPlaySync, IRPusherPlayTap } from "../../interfaces/types-pusher-return";
 import { setStatusMsg } from "../../feature/statusSlice";
-import SyncPlayer from "../../util/sync-player";
+import VibePlayer from "../../util/vibe-player";
 import { ISheet } from "../../interfaces/types";
 import JoinGroupDialog from "../../components/JoinGroupDialog";
 import UsersGrid from "../../components/UsersGrid";
@@ -93,13 +93,13 @@ const Group = function () {
 		channel.bind("play-tap-on", (data: IRPusherPlayTap) => {
 			if (data.message.uid !== user.uid) {
 				dispatch(setGroupUserPlaying({ uid: data.message.uid, val: true }));
-				SyncPlayer.on(Infinity);
+				VibePlayer.on(Infinity);
 			}
 		});
 		channel.bind("play-tap-off", (data: IRPusherPlayTap) => {
 			if (data.message.uid !== user.uid) {
 				dispatch(setGroupUserPlaying({ uid: data.message.uid, val: false }));
-				SyncPlayer.off();
+				VibePlayer.off();
 			}
 		});
 		channel.bind("play-sync", (data: IRPusherPlaySync) => {
@@ -114,7 +114,7 @@ const Group = function () {
 	};
 
 	const player = async (sheet: ISheet): Promise<void> => {
-		await SyncPlayer.play(sheet);
+		await VibePlayer.play(sheet);
 	};
 
 	return (

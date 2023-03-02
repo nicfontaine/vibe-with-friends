@@ -14,9 +14,9 @@ const UsersGrid = function ({ isTapPlaying }: IProps) {
 		<>
 			<div className="pd-t-8 user-grid">
 				{group.users && group.users.map((u) => {
-					const isPlaying = u.playing ? "playing" : "";
+					const isPlaying = u.playing ? "active-remote" : "";
 					const isUser = u.uid === user.uid ? "user" : "";
-					const styleTapPlay = isTapPlaying && u.uid === user.uid ? "tap-play-on" : "";
+					const styleTapPlay = isTapPlaying && u.uid === user.uid ? "active-user" : "";
 					return (
 						<div
 							key={u.uid}
