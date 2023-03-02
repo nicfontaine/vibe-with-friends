@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import Head from "next/head";
 import BtnCreateGroup from "../components/BtnCreateGroup";
 import { useAppSelector } from "../app/store";
 import JoinGroupDialog from "../components/JoinGroupDialog";
@@ -6,10 +7,10 @@ import UserNameDialog from "../components/UserNameDialog";
 import NavMain from "../components/NavMain";
 import { useDispatch } from "react-redux";
 import { setDialogJoinGroup } from "../feature/dialogSlice";
-import { setStatusMsg } from "../feature/statusSlice";
 import { deleteGroup } from "../feature/groupSlice";
 import { setUserIsOwner } from "../feature/userSlice";
 import { MdOutlineAddLink } from "react-icons/md";
+import NavigatorDialog from "../components/NavigatorDialog";
 
 const Home = function () {
 	//
@@ -27,6 +28,10 @@ const Home = function () {
 
 	return (
 		<>
+
+			<Head>
+				<title>{process.env.NEXT_PUBLIC_APP_NAME}</title>
+			</Head>
 			
 			<NavMain />
 
@@ -45,13 +50,14 @@ const Home = function () {
 						}}	
 					>
 						<span className="icon mg-r-2 d-flx">
-							<MdOutlineAddLink />
+							<MdOutlineAddLink size={21} />
 						</span>
 						<span className="text">Join Group</span></button>
 				</div>
 
 				<UserNameDialog maxWidth={250} />
 				<JoinGroupDialog maxWidth={350} />
+				<NavigatorDialog maxWidth={450} />
 				
 			</main>
 		</>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, batch } from "react-redux";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import NavMain from "../../components/NavMain";
 import UserNameDialog from "../../components/UserNameDialog";
@@ -117,8 +118,16 @@ const Group = function () {
 		await VibePlayer.play(sheet);
 	};
 
+	let pageTitle = process.env.NEXT_PUBLIC_APP_NAME;
+	if (groupStore.id) pageTitle = `${pageTitle} - ${groupStore.id}`;
+
 	return (
 		<>
+			
+			<Head>
+				<title>{pageTitle}</title>
+			</Head>
+
 			<NavMain />
 			
 			<UsersGrid

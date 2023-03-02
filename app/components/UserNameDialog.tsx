@@ -98,9 +98,10 @@ const UserNameDialog = function ({ maxWidth }: IProps) {
 						data-event-close="true"
 					>
 						<div className="inner" style={innerStyle}>
-							<h2 className="heading mg-t-0 pd-t-0 mg-b-4">Enter a Name</h2>
+							<h2 className="heading mg-t-0 pd-t-0 mg-b-4">Username</h2>
 							<div className="d-flx">
 								<input
+									className="text-up"
 									ref={inputRef}
 									value={name}
 									onChange={handle.change}

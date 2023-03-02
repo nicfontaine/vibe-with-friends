@@ -20,9 +20,9 @@ body {
 
 html {
 	background: linear-gradient(10deg,#511f55,#2d134d);
+	/* transition: background 0.03s; */
 	min-height: 100vh;
 	color: #eee;
-	transition: background 0.03s;
 	font-size: 17px;
 	/* font-family: "Comfortaa"; */
 	font-family: "Prompt";
@@ -30,6 +30,7 @@ html {
 }
 html.play-sync-on {
 	background: linear-gradient(10deg, #9839b2, #2c2577);
+	background: linear-gradient(10deg, #792d8e, #221d5a);
 }
 
 a {
@@ -368,7 +369,7 @@ code {
 }
 .user-grid-block.active-user:after,
 .user-grid-block.active-remote:after {
-	animation: userBlockActiveBorder 0.1s infinite;
+	animation: userBlockActiveBorder 0.2s infinite;
 }
 @keyframes userBlockActiveBorder {
 	0% {

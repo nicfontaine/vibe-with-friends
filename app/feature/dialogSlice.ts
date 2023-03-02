@@ -3,10 +3,12 @@ import { createSlice } from "@reduxjs/toolkit";
 interface IDialog {
 	dialogUserName: boolean;
 	dialogJoinGroup: boolean;
+	dialogNavigator: boolean;
 }
 const initialState: IDialog = {
 	dialogUserName: false,
 	dialogJoinGroup: false,
+	dialogNavigator: false,
 };
 
 export const dialogSlice = createSlice({
@@ -19,12 +21,16 @@ export const dialogSlice = createSlice({
 		setDialogJoinGroup: (state, action) => {
 			state.dialogJoinGroup = action.payload;
 		},
+		setDialogNavigator: (state, action) => {
+			state.dialogNavigator = action.payload;
+		},
 	},
 });
 
 export const {
 	setDialogUserName,
 	setDialogJoinGroup,
+	setDialogNavigator,
 } = dialogSlice.actions;
 
 export default dialogSlice.reducer;
