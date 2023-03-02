@@ -69,13 +69,13 @@ const NavigatorDialog = function ({ maxWidth }: IProps) {
 								</span>
 								<h2 className="heading mg-t-0 pd-t-0 mg-b-0">Aw, Shucks...</h2>
 							</div>
-							<p className="mg-t-2">Looks like your device doesn&apos;t support the Vibration API. It will still display visually, but will not vibrate as intended.</p>
+							<p className="mg-t-2">Looks like your device doesn&apos;t support the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Navigator/vibrate#browser_compatibility" target="_blank" rel="noreferrer">Vibration API</a>. It will still display visually, but will not vibrate as intended.</p>
 							<div className="d-flx just-ctr">
 								<button
 									onClick={handle.close}
 									onKeyDown={handle.keyDown}
 									autoFocus
-									className="pd-a-1 pd-r-2 pd-l-2 mg-l-2 btn-green"
+									className="pd-a-1 pd-r-2 pd-l-2 mg-l-2 btn-clear btn-med"
 								>
 									Close
 								</button>
