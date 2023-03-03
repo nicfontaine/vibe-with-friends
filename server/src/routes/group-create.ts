@@ -9,14 +9,14 @@ const groupCreate = function (req: Request, res: Response) {
 	const { user }: { user: IUser } = req.body;
 	user.uid = user.uid || uuidv4();
 	const group: IGroup = {
-		id: createGroupID(),
+		name: createGroupID(),
 		ownerID: user.uid,
 		lastEvent: Date.now(),
 		users: [{ uid: user.uid, name: user.name, isOwner: true }],
 	};
 	// TODO: GQL createGroup()
-	store[group.id] = group;
-	console.log(`[/api/group/create] New group created: ${group.id}`);
+	store[group.name] = group;
+	console.log(`[/api/group/create] New group created: ${group.name}`);
 	res.status(200).json({ user, group });
 };
 

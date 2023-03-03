@@ -19,7 +19,7 @@ const Home = function () {
 
 	useEffect(() => {
 		// dispatch(setStatusMsg(""));
-		dispatch(deleteGroup(groupStore.id));
+		dispatch(deleteGroup(groupStore.name));
 		dispatch(setUserIsOwner(false));
 		return () => {
 			dispatch(setDialogJoinGroup(false));
@@ -38,11 +38,9 @@ const Home = function () {
 			<main style={{ textAlign: "center" }}>
 
 				<div className="button-container center d-flx flx-col">
-					{!groupStore.id.length && (
-						<BtnCreateGroup
-							size="large-2"
-						></BtnCreateGroup>
-					)}
+					<BtnCreateGroup
+						size="large-2"
+					></BtnCreateGroup>
 					<button
 						className="btn-small btn-light text-up mg-t-4"
 						onClick={() => {

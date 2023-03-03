@@ -1,5 +1,6 @@
 import { useAppSelector } from "../app/store";
 import { VscGlobe } from "react-icons/vsc";
+import PuffLoader from "react-spinners/PuffLoader";
 
 interface IProps {
 	isTapPlaying: boolean;
@@ -13,7 +14,7 @@ const UsersGrid = function ({ isTapPlaying }: IProps) {
 	return (
 		<>
 			<div className="pd-t-8 user-grid">
-				{group.users && group.users.map((u) => {
+				{group.users ? group.users.map((u) => {
 					const isPlaying = u.playing ? "active-remote" : "";
 					const isUser = u.uid === user.uid ? "user" : "";
 					const styleTapPlay = isTapPlaying && u.uid === user.uid ? "active-user" : "";
@@ -30,7 +31,11 @@ const UsersGrid = function ({ isTapPlaying }: IProps) {
 							}
 						</div>
 					);
-				})}
+				}) : (
+					<div className="loading-center">
+						<PuffLoader color="#aaaaaa" size={70} className="center loading-spinner" />
+					</div>
+				)}
 			</div>
 		</>
 	);

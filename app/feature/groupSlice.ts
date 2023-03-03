@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { IGroup, IGroupUser } from "../interfaces/types";
 
 const initialState: IGroup = {
-	id: "",
+	name: "",
 	ownerID: "",
 	users: [],
 };
@@ -12,15 +12,15 @@ export const groupSlice = createSlice({
 	initialState,
 	reducers: {
 		setGroup: (state, action) => {
-			state.id = action.payload.id;
+			state.name = action.payload.name;
 			state.ownerID = action.payload.ownerID;
 			state.users = action.payload.users;
 		},
 		setGroupID: (state, action) => {
-			state.id = action.payload;
+			state.name = action.payload;
 		},
 		deleteGroup: (state, action) => {
-			state.id = initialState.id;
+			state.name = initialState.name;
 			state.ownerID = initialState.ownerID;
 			state.users = initialState.users;
 		},

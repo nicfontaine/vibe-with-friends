@@ -9,7 +9,7 @@ type IGroupUser = {
 	isOwner: boolean;
 };
 type IGroup = {
-	id: string;
+	name: string;
 	ownerID: string;
 	lastEvent: number;
 	users: IGroupUser[];

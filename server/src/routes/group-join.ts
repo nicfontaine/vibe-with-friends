@@ -10,50 +10,50 @@ const groupJoin = function (req: Request, res: Response) {
 	user.uid = user.uid || uuidv4();
 
 	// Group doesn't exist / expired
-	if (!(group.id in store)) {
-		console.log(`[/api/group/join] Group not found: ${group.id}`);
+	if (!(group.name in store)) {
+		console.log(`[/api/group/join] Group not found: ${group.name}`);
 		user.isOwner = false;
-		group.id = "";
+		group.name = "";
 		return res.status(200).json({ err: "Group not found", user, group });
 	}
 
-	group.ownerID = store[group.id].ownerID;
-	store[group.id].lastEvent = Date.now();
-	const userGroupIndex = store[group.id].users.findIndex((u) => u.uid === user.uid);
+	group.ownerID = store[group.name].ownerID;
+	store[group.name].lastEvent = Date.now();
+	const userGroupIndex = store[group.name].users.findIndex((u) => u.uid === user.uid);
 
 	// User is owner. Already set to ownerID, and in list of users
-	if (user.uid === store[group.id].ownerID) {
+	if (user.uid === store[group.name].ownerID) {
 		user.isOwner = true;
 		console.log(
-			`[/api/group/join] User is group owner, rejoining: ${group.id}`,
+			`[/api/group/join] User is group owner, rejoining: ${group.name}`,
 		);
 	} else if (userGroupIndex < 0) {
 		// New group user
 		// TODO: GQL groupUser()
-		store[group.id].users.push({
+		store[group.name].users.push({
 			uid: user.uid,
 			name: user.name,
 			isOwner: false,
 		});
 		console.log("trigger add user");
-		pusher.trigger(group.id, "add-user", {
-			message: store[group.id],
+		pusher.trigger(group.name, "add-user", {
+			message: store[group.name],
 		});
-		console.log(`[/api/group/join] User added to group: ${group.id}`);
+		console.log(`[/api/group/join] User added to group: ${group.name}`);
 	} else {
 		// User exists in group
-		console.log(`[/api/group.id/join] User already in group: ${group.id}`);
+		console.log(`[/api/group/join] User already in group: ${group.name}`);
 		// TODO: GQL groupUser()
-		const ulist = store[group.id].users.map((u: IGroupUser) => {
+		const ulist = store[group.name].users.map((u: IGroupUser) => {
 			if (u.uid !== user.uid) return u;
 			u.isOwner = false;
 			return u;
 		});
-		store[group.id].users = ulist;
-		// store[group.id].users[user.uid].isOwner = false;
+		store[group.name].users = ulist;
+		// store[group.name].users[user.uid].isOwner = false;
 	}
 
-	group.users = store[group.id].users;
+	group.users = store[group.name].users;
 	res.status(200).json({ user, group });
 	//
 };

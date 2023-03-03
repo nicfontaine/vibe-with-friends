@@ -11,7 +11,7 @@ interface IGroupUser {
 }
 
 interface IGroup {
-	id: string,
+	name: string,
 	ownerID: string;
 	users: IGroupUser[];
 }

@@ -19,7 +19,6 @@ import BtnPlayTap from "../../components/BtnPlayTap";
 import BtnCreateGroup from "../../components/BtnCreateGroup";
 import BtnPlaySync from "../../components/BtnPlaySync";
 import Pusher from "pusher-js";
-// import * as PusherTypes from "pusher-js";
 // Pusher.logToConsole = true;
 const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY as string, {
 	cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER as string,
@@ -38,11 +37,11 @@ const Group = function () {
 
 	useEffect(() => {
 		// pusher.unbind();
-		// pusher.unsubscribe(groupStore.id);
+		// pusher.unsubscribe(groupStore.name);
 		// pusher.disconnect();
 		// return () => {
 		// 	pusher.unbind();
-		// 	pusher.unsubscribe(groupStore.id);
+		// 	pusher.unsubscribe(groupStore.name);
 		// 	pusher.disconnect();
 		// };
 		return () => {
@@ -61,7 +60,7 @@ const Group = function () {
 
 	useEffect(() => {
 		if (userStore.name) {
-			if (gid && !groupStore.id) {
+			if (gid && !groupStore.name) {
 				join(gid.toString());
 			}
 		}
@@ -82,7 +81,7 @@ const Group = function () {
 			dispatch(setGroup(group));
 		});
 
-		const channel = pusher.subscribe(group.id);
+		const channel = pusher.subscribe(group.name);
 
 		// TODO: Cleanup
 		channel.bind("add-user", (data: IRPusherAddUser) => {
@@ -106,7 +105,6 @@ const Group = function () {
 		channel.bind("play-sync", (data: IRPusherPlaySync) => {
 			const { start } = data.message;
 			const delta = (new Date(start)).getTime() - Date.now();
-			// console.log(`Start: ${data.message.start}`);
 			console.log(`Running in ${delta} ms, at ${start}`);
 			setTimeout(() => {
 				player(data.message.sheet);
@@ -119,7 +117,7 @@ const Group = function () {
 	};
 
 	let pageTitle = process.env.NEXT_PUBLIC_APP_NAME;
-	if (groupStore.id) pageTitle = `${pageTitle} - ${groupStore.id}`;
+	if (groupStore.name) pageTitle = `${pageTitle} - ${groupStore.name}`;
 
 	return (
 		<>

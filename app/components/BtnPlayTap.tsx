@@ -26,7 +26,7 @@ const BtnPlayTap = function ({ setIsTapPlaying }: IProps) {
 		btnOn();
 		const res = await playTapOn(user, group);
 		if (res.err) {
-			dispatch(deleteGroup(group.id));
+			dispatch(deleteGroup(group.name));
 			dispatch(setStatusMsg(res.err));
 			router.push("/", undefined, { shallow: true });
 			return;
@@ -37,7 +37,7 @@ const BtnPlayTap = function ({ setIsTapPlaying }: IProps) {
 		btnOff();
 		const res = await playTapOff(user, group);
 		if (res.err) {
-			dispatch(deleteGroup(group.id));
+			dispatch(deleteGroup(group.name));
 			dispatch(setStatusMsg(res.err));
 			router.push("/", undefined, { shallow: true });
 			return;
@@ -76,7 +76,7 @@ const BtnPlayTap = function ({ setIsTapPlaying }: IProps) {
 	
 	return (
 		<>
-			{group.id &&
+			{group.name &&
 				<div
 					ref={btnRef}
 					className="btn-tap-play"

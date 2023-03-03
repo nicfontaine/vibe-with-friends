@@ -36,7 +36,7 @@ const UserNameDialog = function ({ maxWidth }: IProps) {
 		const res = await changeUserName(userStore, groupStore);
 		const { user, group } = res;
 		if (res.err) {
-			dispatch(deleteGroup(group.id));
+			dispatch(deleteGroup(group.name));
 			dispatch(setStatusMsg(res.err));
 			router.push("/", undefined, { shallow: true });
 			return;
@@ -51,7 +51,7 @@ const UserNameDialog = function ({ maxWidth }: IProps) {
 	useEffect(() => {
 		const n = userStore.name;
 		const nameInGroup = groupStore.users.filter((u) => u.name === n);
-		if (n && groupStore.id && nameInGroup) {
+		if (n && groupStore.name && nameInGroup) {
 			updateUserName();
 		}
 	}, [userStore.name]);

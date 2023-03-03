@@ -23,9 +23,9 @@ const BtnPlaySync = function () {
 	const player = async (sheet: ISheet): Promise<void> => {
 		if (isRunning) return;
 		setIsRunning(true);
-		const res = await playSync(groupStore.id, sheet);
+		const res = await playSync(groupStore.name, sheet);
 		if (res.err) {
-			dispatch(deleteGroup(groupStore.id));
+			dispatch(deleteGroup(groupStore.name));
 			dispatch(setStatusMsg(res.err));
 			router.push("/", undefined, { shallow: true });
 			return;
@@ -34,7 +34,7 @@ const BtnPlaySync = function () {
 		setIsRunning(false);
 	};
 
-	const btnShow = userStore.isOwner && groupStore.id ? "show" : "hide";
+	const btnShow = userStore.isOwner && groupStore.name ? "show" : "hide";
 
 	return (
 		<button

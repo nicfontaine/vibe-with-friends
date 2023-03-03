@@ -1,7 +1,6 @@
 import { KeyboardEvent, MouseEvent, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "../app/store";
-import { RiSendPlane2Fill } from "react-icons/ri";
 import { setDialogNavigator } from "../feature/dialogSlice";
 import { MdOutlineSecurityUpdateWarning } from "react-icons/md";
 

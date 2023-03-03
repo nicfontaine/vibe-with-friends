@@ -24,7 +24,7 @@ const JoinGroupDialog = function ({ maxWidth }: IProps) {
 		}
 		inputRef?.current?.focus();
 	}, [dialogStore.dialogJoinGroup]);
-
+	
 	const handle = {
 		change (e: ChangeEvent<HTMLInputElement>): void {
 			setVal(e.target.value.trim());

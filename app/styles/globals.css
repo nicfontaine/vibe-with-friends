@@ -336,7 +336,7 @@ code {
 }
 .user-grid-block.active-user,
 .user-grid-block.active-remote {
-	animation: userBlockActive 0.17s infinite ease-in-out;
+	animation: userBlockActive 0.12s infinite ease-in-out;
 }
 @keyframes userBlockActive {
 	0% {
@@ -364,13 +364,13 @@ code {
 	content: "";
 	border-radius: 5px;
 	position: absolute;
-	top: -2px; right: -2px; bottom: -2px; left: -2px;
+	top: -4px; right: -4px; bottom: -4px; left: -4px;
 	border: 4px solid #fff;
 	opacity: 0;
 }
 .user-grid-block.active-user:after,
 .user-grid-block.active-remote:after {
-	animation: userBlockActiveBorder 0.2s infinite;
+	animation: userBlockActiveBorder 0.3s infinite;
 }
 @keyframes userBlockActiveBorder {
 	0% {
@@ -420,8 +420,13 @@ code {
 	padding: 1.4rem 2rem 2.3rem 2rem;
 	border-radius: 1rem;
 	align-self: flex-start;
+	transform: translateY(-10%);
+	transition: transform 0.3s ease-out;
 	/* max-width: 240px; */
 	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+.input-dialog-container.show .inner {
+	transform: translateY(0);
 }
 .input-dialog-container .heading {
 	color: var(--main-heading-color);

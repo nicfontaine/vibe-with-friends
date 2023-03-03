@@ -28,7 +28,7 @@ const BtnCreateGroup = function ({ size, text }: IProps) {
 			dispatch(setGroup(group));
 		});
 		if (res.msg) dispatch(setStatusMsg(res.msg));
-		router.push({ pathname: "/group/[gid]", query: { gid: group.id } });
+		router.push({ pathname: "/group/[gid]", query: { gid: group.name } });
 	};
 
 	return (

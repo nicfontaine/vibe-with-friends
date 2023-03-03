@@ -1,4 +1,4 @@
-import { MouseEvent } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import BtnPlaySync from "../components/BtnPlaySync";
 import BtnCreateGroup from "./BtnCreateGroup";
 import { useRouter } from "next/router";
@@ -20,10 +20,22 @@ const NavMain = function () {
 	const router = useRouter();
 	const userStore = useAppSelector((state) => state.user);
 	const groupStore = useAppSelector((state) => state.group);
+	const [groupDisplayString, setGroupDisplayString] = useState("");
+
+	useEffect(() => {
+		if (groupStore.name) {
+			let i = 1;
+			const t = setInterval(() => {
+				if (i >= groupStore.name.length) clearInterval(t);
+				setGroupDisplayString(groupStore.name.substring(0, i));
+				i++;
+			}, 20);
+		}
+	}, [groupStore.name]);
 
 	const handleButtonHome = function (e: MouseEvent<HTMLButtonElement>): void {
 		batch(() => {
-			dispatch(deleteGroup(groupStore.id));
+			dispatch(deleteGroup(groupStore.name));
 			dispatch(setUserIsOwner(false));
 		});
 		router.push({ pathname: "/" });
@@ -34,7 +46,7 @@ const NavMain = function () {
 	};
 
 	const handleGroupCopy = function (): void {
-		copyToClipboard(groupStore.id);
+		copyToClipboard(groupStore.name);
 		dispatch(setStatusMsg("Copied Group Name"));
 	};
 
@@ -52,7 +64,7 @@ const NavMain = function () {
 					>
 						<AiOutlineHome className="icon-main" size="45" />
 					</button>
-					{groupStore.id.length ? (
+					{groupStore.name.length ? (
 						<div className="hide-smaller-med align-center mg-l-4">
 							<BtnCreateGroup
 								size="med"
@@ -64,7 +76,7 @@ const NavMain = function () {
 					
 				<div className="center">
 					<h1 className="heading">{process.env.NEXT_PUBLIC_APP_NAME}</h1>
-					{groupStore.id && (
+					{groupStore.name && (
 						<div className="nav-group-code">
 							<span className="icon mg-r-2 d-flx flx-items-ctr">
 								<HiOutlineUserGroup size="20"></HiOutlineUserGroup>
@@ -72,7 +84,7 @@ const NavMain = function () {
 							<div
 								className="group"
 								onClick={handleGroupCopy}
-							>{groupStore.id}</div>
+							>{groupDisplayString}</div>
 						</div>
 					)}
 				</div>

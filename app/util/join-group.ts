@@ -15,7 +15,7 @@ const joinGroup = async function (
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify({
 			user,
-			group: { id: groupID },
+			group: { name: groupID },
 		}),
 	});
 	const res: IReturn = await response.json();
