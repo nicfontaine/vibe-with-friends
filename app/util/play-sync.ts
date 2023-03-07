@@ -1,4 +1,4 @@
-import { ISheet } from "../interfaces/types";
+import { ISheet } from "../types/types";
 interface IReturn {
 	start: string;
 	err?: string;

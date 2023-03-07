@@ -1,9 +1,9 @@
-import { IUser, IGroup } from "../interfaces/types";
+import { User, Group } from "../types/types";
 import copyToClipboard from "./copy-to-clipboard";
 
 interface IReturn {
-	user: IUser;
-	group: IGroup;
+	user: User;
+	group: Group;
 	msg?: string;
 }
 
@@ -21,7 +21,7 @@ const share = async function (url: string): Promise<string> {
 	}
 };
 
-const createGroup = async function (user: IUser): Promise<IReturn> {
+const createGroup = async function (user: User): Promise<IReturn> {
 	//
 	const response = await fetch("/api/group/create", {
 		method: "POST",

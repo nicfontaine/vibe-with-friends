@@ -1,11 +1,11 @@
-import { IUser, IGroup } from "../interfaces/types";
+import { User, Group } from "../types/types";
 interface IReturn {
 	err?: string;
 }
 
 const playTapOn = async function (
-	user: IUser,
-	group: IGroup,
+	user: User,
+	group: Group,
 ): Promise<IReturn> {
 	const response = await fetch("/api/group/play-tap-on", {
 		method: "POST",
@@ -17,8 +17,8 @@ const playTapOn = async function (
 };
 
 const playTapOff = async function (
-	user: IUser,
-	group: IGroup,
+	user: User,
+	group: Group,
 	err?: string,
 ) {
 	const response = await fetch("/api/group/play-tap-off", {

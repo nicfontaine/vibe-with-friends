@@ -19,7 +19,7 @@ const Home = function () {
 
 	useEffect(() => {
 		// dispatch(setStatusMsg(""));
-		dispatch(deleteGroup(groupStore.name));
+		dispatch(deleteGroup());
 		dispatch(setUserIsOwner(false));
 		return () => {
 			dispatch(setDialogJoinGroup(false));

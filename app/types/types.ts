@@ -1,29 +1,26 @@
-interface IUser {
+type User = {
 	uid: string;
 	name: string;
 	isOwner: boolean;
-}
-
-interface IGroupUser {
+};
+type GroupUser = {
 	uid: string;
 	name: string;
 	playing: boolean;
-}
-
-interface IGroup {
+};
+type Group = {
 	name: string,
 	ownerID: string;
-	users: IGroupUser[];
-}
-
-interface ISheet {
+	users: GroupUser[];
+};
+type Sheet = {
 	bpm: number;
 	song: number[];
-}
+};
 
 export type {
-	IUser,
-	IGroup,
-	IGroupUser,
-	ISheet,
+	User,
+	Group,
+	GroupUser,
+	Sheet,
 };

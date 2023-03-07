@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
 import createGroupID from "../util/create-group-id";
-import { IUser, IGroup } from "../types";
+import { User, Group } from "../types";
 import store from "../store";
 
 // Create new group, as owner
 const groupCreate = function (req: Request, res: Response) {
-	const { user }: { user: IUser } = req.body;
+	const { user }: { user: User } = req.body;
 	user.uid = user.uid || uuidv4();
-	const group: IGroup = {
+	const group: Group = {
 		name: createGroupID(),
 		ownerID: user.uid,
 		lastEvent: Date.now(),

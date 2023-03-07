@@ -1,25 +1,25 @@
-type IUser = {
+type User = {
 	uid: string;
 	name: string;
 	isOwner: boolean;
 };
-type IGroupUser = {
+type GroupUser = {
 	uid: string;
 	name: string;
 	isOwner: boolean;
 };
-type IGroup = {
+type Group = {
 	name: string;
 	ownerID: string;
 	lastEvent: number;
-	users: IGroupUser[];
+	users: GroupUser[];
 };
 type IStore = {
-	[key: string]: IGroup;
+	[key: string]: Group;
 };
 type ISheet = {
 	bpm: number;
 	song: number[];
 };
 
-export type { IUser, IGroup, IGroupUser, IStore, ISheet };
+export type { User, Group, GroupUser, IStore, ISheet };

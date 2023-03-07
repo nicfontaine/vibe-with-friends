@@ -2,7 +2,7 @@ import { ChangeEvent, KeyboardEvent, MouseEvent, useEffect, useRef, useState } f
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "../app/store";
 import { setUserName } from "../feature/userSlice";
-import changeUserName from "../util/change-username";
+import changeGroupUserName from "./../util/change-group-username";
 import { RiSendPlane2Fill } from "react-icons/ri";
 import { setDialogUserName } from "../feature/dialogSlice";
 import { deleteGroup, setGroupUsers } from "../feature/groupSlice";
@@ -33,10 +33,10 @@ const UserNameDialog = function ({ maxWidth }: IProps) {
 	}, [dialogStore.dialogUserName]);
 
 	const updateUserName = async function (): Promise<void> {
-		const res = await changeUserName(userStore, groupStore);
+		const res = await changeGroupUserName(userStore, groupStore);
 		const { user, group } = res;
 		if (res.err) {
-			dispatch(deleteGroup(group.name));
+			dispatch(deleteGroup());
 			dispatch(setStatusMsg(res.err));
 			router.push("/", undefined, { shallow: true });
 			return;

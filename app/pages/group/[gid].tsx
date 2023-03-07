@@ -9,10 +9,10 @@ import { useAppSelector } from "../../app/store";
 import joinGroup from "../../util/join-group";
 import { deleteGroup, setGroup, setGroupUserPlaying, setGroupUsers } from "../../feature/groupSlice";
 import { setUser } from "../../feature/userSlice";
-import { IRPusherAddUser, IRPusherChangeUserName, IRPusherPlaySync, IRPusherPlayTap } from "../../interfaces/types-pusher-return";
+import { IRPusherAddUser, IRPusherChangeUserName, IRPusherPlaySync, IRPusherPlayTap } from "../../types/types-pusher-return";
 import { setPlaySyncLoading, setStatusMsg } from "../../feature/statusSlice";
 import VibePlayer from "../../util/vibe-player";
-import { ISheet } from "../../interfaces/types";
+import { Sheet } from "../../types/types";
 import JoinGroupDialog from "../../components/JoinGroupDialog";
 import UsersGrid from "../../components/UsersGrid";
 import BtnPlayTap from "../../components/BtnPlayTap";
@@ -70,7 +70,7 @@ const Group = function () {
 		//
 		const res = await joinGroup(userStore, gid);
 		if (res.err) {
-			dispatch(deleteGroup(gid));
+			dispatch(deleteGroup());
 			dispatch(setStatusMsg(res.err));
 			router.push("/", undefined, { shallow: true });
 			return;
@@ -114,7 +114,7 @@ const Group = function () {
 		});
 	};
 
-	const player = async (sheet: ISheet): Promise<void> => {
+	const player = async (sheet: Sheet): Promise<void> => {
 		await VibePlayer.play(sheet);
 	};
 

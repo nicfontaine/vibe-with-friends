@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IUser } from "../interfaces/types";
+import { User } from "../types/types";
 
-const initialState: IUser = {
+const initialState: User = {
 	uid: "",
 	name: "",
 	isOwner: false,

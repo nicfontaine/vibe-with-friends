@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useRef } from "react";
 import sheets from "../util/sheets";
 import { useAppSelector } from "../app/store";
-import { ISheet } from "../interfaces/types";
+import { ISheet } from "../types/types";
 import { FaPlayCircle } from "react-icons/fa";
 import { playSync } from "../util/play-sync";
 import { useDispatch } from "react-redux";
@@ -27,7 +27,7 @@ const BtnPlaySync = function () {
 		setIsRunning(true);
 		const res = await playSync(groupStore.name, sheet);
 		if (res.err) {
-			dispatch(deleteGroup(groupStore.name));
+			dispatch(deleteGroup());
 			dispatch(setStatusMsg(res.err));
 			router.push("/", undefined, { shallow: true });
 			return;

@@ -23,19 +23,22 @@ const NavMain = function () {
 	const [groupDisplayString, setGroupDisplayString] = useState("");
 
 	useEffect(() => {
-		if (groupStore.name) {
-			let i = 1;
-			const t = setInterval(() => {
-				if (i >= groupStore.name.length) clearInterval(t);
-				setGroupDisplayString(groupStore.name.substring(0, i));
-				i++;
-			}, 20);
-		}
+		dispatch(deleteGroup());
+	}, []);
+
+	useEffect(() => {
+		if (!groupStore.name.length) return;
+		let i = 1;
+		const t = setInterval(() => {
+			if (i >= groupStore.name.length) clearInterval(t);
+			setGroupDisplayString(groupStore.name.substring(0, i));
+			i++;
+		}, 20);
 	}, [groupStore.name]);
 
 	const handleButtonHome = function (e: MouseEvent<HTMLButtonElement>): void {
 		batch(() => {
-			dispatch(deleteGroup(groupStore.name));
+			dispatch(deleteGroup());
 			dispatch(setUserIsOwner(false));
 		});
 		router.push({ pathname: "/" });

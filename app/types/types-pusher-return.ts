@@ -1,16 +1,16 @@
-import { IGroupUser, ISheet } from "./types";
+import { GroupUser, ISheet } from "./types";
 
 interface IRPusherChangeUserName {
 	message: {
 		ownerID: string;
-		users: IGroupUser;
+		users: GroupUser;
 	};
 }
 
 interface IRPusherAddUser {
 	message: {
 		ownerID: string;
-		users: IGroupUser;
+		users: GroupUser;
 	}
 }
 

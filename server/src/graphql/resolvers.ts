@@ -2,7 +2,7 @@ import { ObjectId } from "mongoose";
 import Group from "../models/Group";
 import createGroupID from "../util/create-group-id";
 import { v4 as uuidv4 } from "uuid";
-import { IGroupUser } from "../types";
+import { GroupUser } from "../types";
 import { pusher } from "../app";
 interface OID {
 	ID: ObjectId;
@@ -93,7 +93,7 @@ const resolvers = {
 		async setGroupUserName (_: any, args: any) {
 			const group = await Group.findById(args.ID);
 			if (group) {
-				const list = group.users.map((u: IGroupUser) => {
+				const list = group.users.map((u: GroupUser) => {
 					if (u.uid === args.user.uid) u.name = args.user.name;
 					return u;
 				});

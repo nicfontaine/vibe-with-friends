@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
-import { IUser, IGroup, IGroupUser } from "../types";
+import { User, Group, GroupUser } from "../types";
 import store from "../store";
 import { pusher } from "../app";
 
 const groupJoin = function (req: Request, res: Response) {
 	//
-	const { user, group }: { user: IUser; group: IGroup } = req.body;
+	const { user, group }: { user: User; group: Group } = req.body;
 	user.uid = user.uid || uuidv4();
 
 	// Group doesn't exist / expired
@@ -43,7 +43,7 @@ const groupJoin = function (req: Request, res: Response) {
 	} else {
 		// User exists in group
 		console.log(`[/api/group/join] User already in group: ${group.name}`);
-		const ulist = store[group.name].users.map((u: IGroupUser) => {
+		const ulist = store[group.name].users.map((u: GroupUser) => {
 			if (u.uid !== user.uid) return u;
 			u.isOwner = false;
 			return u;

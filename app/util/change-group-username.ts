@@ -1,14 +1,14 @@
-import { IUser, IGroup } from "../interfaces/types";
+import { User, Group } from "../types/types";
 
 interface IReturn {
-	user: IUser;
-	group: IGroup;
+	user: User;
+	group: Group;
 	err?: string;
 }
 
-const changeUserName = async function (
-	user: IUser,
-	group: IGroup,
+const changeGroupUserName = async function (
+	user: User,
+	group: Group,
 ) {
 	const response = await fetch("/api/group/change-username", {
 		method: "POST",
@@ -19,4 +19,4 @@ const changeUserName = async function (
 	return res;
 };
 
-export default changeUserName;
+export default changeGroupUserName;

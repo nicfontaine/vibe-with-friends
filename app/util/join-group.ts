@@ -1,13 +1,13 @@
-import { IUser, IGroup } from "../interfaces/types";
+import { User, Group } from "../types/types";
 
 interface IReturn {
-	user: IUser;
-	group: IGroup;
+	user: User;
+	group: Group;
 	err?: string;
 }
 
 const joinGroup = async function (
-	user: IUser,
+	user: User,
 	groupID: string,
 ): Promise<IReturn> {
 	const response = await fetch("/api/group/join", {

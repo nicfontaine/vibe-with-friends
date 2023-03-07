@@ -8,7 +8,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 const client = new ApolloClient({
-	uri: "localhost:3600",
+	uri: "/graphql",
 	cache: new InMemoryCache(),
 });
 

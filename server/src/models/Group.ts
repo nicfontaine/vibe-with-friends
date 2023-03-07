@@ -1,18 +1,18 @@
 import { model, Schema } from "mongoose";
 
-type IGroupUser = {
+type GroupUser = {
 	uid: string;
 	name: string;
 	isOwner: boolean;
 };
-type IGroup = {
+type Group = {
 	name: string;
 	ownerID: string;
 	lastEvent: number;
-	users: IGroupUser[];
+	users: GroupUser[];
 };
 
-const groupUserSchema: Schema = new Schema<IGroupUser>({
+const groupUserSchema: Schema = new Schema<GroupUser>({
 	uid: {
 		type: String,
 		required: true,
@@ -27,7 +27,7 @@ const groupUserSchema: Schema = new Schema<IGroupUser>({
 	},
 });
 
-const groupSchema: Schema = new Schema<IGroup>({
+const groupSchema: Schema = new Schema<Group>({
 	name: {
 		type: String,
 		required: true,
@@ -45,4 +45,4 @@ const groupSchema: Schema = new Schema<IGroup>({
 	}],
 });
 
-export default model<IGroup>("Group", groupSchema);
+export default model<Group>("Group", groupSchema);
