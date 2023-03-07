@@ -35,7 +35,7 @@ const createGroup = async function (user: IUser): Promise<IReturn> {
 
 	// const { user, group } = res;
 	const rtn: IReturn = res;
-	const url = `${window.location.href}group/${rtn.group.id}`;
+	const url = `${window.location.origin}/group/${rtn.group.name}`;
 	const msg = await share(url);
 	rtn.msg = msg;
 

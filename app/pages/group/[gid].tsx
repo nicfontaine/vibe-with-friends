@@ -10,7 +10,7 @@ import joinGroup from "../../util/join-group";
 import { deleteGroup, setGroup, setGroupUserPlaying, setGroupUsers } from "../../feature/groupSlice";
 import { setUser } from "../../feature/userSlice";
 import { IRPusherAddUser, IRPusherChangeUserName, IRPusherPlaySync, IRPusherPlayTap } from "../../interfaces/types-pusher-return";
-import { setStatusMsg } from "../../feature/statusSlice";
+import { setPlaySyncLoading, setStatusMsg } from "../../feature/statusSlice";
 import VibePlayer from "../../util/vibe-player";
 import { ISheet } from "../../interfaces/types";
 import JoinGroupDialog from "../../components/JoinGroupDialog";
@@ -104,10 +104,12 @@ const Group = function () {
 		});
 		channel.bind("play-sync", (data: IRPusherPlaySync) => {
 			const { start } = data.message;
+			dispatch(setPlaySyncLoading(true));
 			const delta = (new Date(start)).getTime() - Date.now();
 			console.log(`Running in ${delta} ms, at ${start}`);
 			setTimeout(() => {
 				player(data.message.sheet);
+				dispatch(setPlaySyncLoading(false));
 			}, delta);
 		});
 	};

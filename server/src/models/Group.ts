@@ -1,4 +1,4 @@
-import mongoose, { model, Schema, Document } from "mongoose";
+import { model, Schema } from "mongoose";
 
 type IGroupUser = {
 	uid: string;
@@ -6,11 +6,10 @@ type IGroupUser = {
 	isOwner: boolean;
 };
 type IGroup = {
-	id: string;
 	name: string;
 	ownerID: string;
 	lastEvent: number;
-	users: [IGroupUser];
+	users: IGroupUser[];
 };
 
 const groupUserSchema: Schema = new Schema<IGroupUser>({

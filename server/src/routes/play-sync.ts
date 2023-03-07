@@ -9,9 +9,8 @@ const playSync = function (req: Request, res: Response) {
 		console.log(`[/api/group/play-tap-on] Group not found: ${gid}`);
 		return res.status(200).json({ err: "Group not found" });
 	}
-	// TODO: GQL groupEvent()
 	store[gid].lastEvent = Date.now();
-	const start = new Date(Date.now() + 3 * 1000).toISOString();
+	const start = new Date(Date.now() + 2 * 1000).toISOString();
 
 	pusher.trigger(gid, "play-sync", {
 		message: { start, sheet },

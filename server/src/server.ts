@@ -5,8 +5,9 @@ import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import mongoose from "mongoose";
 import http from "http";
-import typeDefs from "./graphql/typeDefs";
+import { readFileSync } from "fs";
 import resolvers from "./graphql/resolvers";
+const typeDefs = readFileSync("./src/graphql/schema.graphql", { encoding: "utf-8" });
 
 dotenv.config();
 const PORT = process.env.PORT || 3680;

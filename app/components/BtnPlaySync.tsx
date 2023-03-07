@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRef } from "react";
 import sheets from "../util/sheets";
 import { useAppSelector } from "../app/store";
@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { deleteGroup } from "../feature/groupSlice";
 import { setStatusMsg } from "../feature/statusSlice";
 import { useRouter } from "next/router";
+import { PulseLoader } from "react-spinners";
 
 const BtnPlaySync = function () {
 	//
@@ -16,6 +17,7 @@ const BtnPlaySync = function () {
 	const router = useRouter();
 	const userStore = useAppSelector((state) => state.user);
 	const groupStore = useAppSelector((state) => state.group);
+	const statusStore = useAppSelector((state) => state.status);
 
 	const playerBoxRef = useRef<HTMLButtonElement>(null);
 	const [isRunning, setIsRunning] = useState(false);
@@ -37,16 +39,25 @@ const BtnPlaySync = function () {
 	const btnShow = userStore.isOwner && groupStore.name ? "show" : "hide";
 
 	return (
-		<button
-			ref={playerBoxRef}
-			className={`btn-med btn-clear ${btnShow}`}
-			onClick={() => player(sheets.jingle)}
-		>
-			<span className="icon d-flx mg-r-2">
-				<FaPlayCircle />
-			</span>
-			<span className="text">Play Sync</span>
-		</button>
+		<>
+			<button
+				ref={playerBoxRef}
+				className={`btn-med btn-clear ${btnShow}`}
+				onClick={() => player(sheets.jingle)}
+			>
+				<span className="icon d-flx mg-r-2">
+					<FaPlayCircle />
+				</span>
+				<span className="text">Play Sync</span>
+				<div className="btn-play-sync-loading">
+					<PulseLoader
+						size={7}
+						loading={statusStore.playSyncLoading}
+						color={"#fff"}
+					></PulseLoader>
+				</div>
+			</button>
+		</>
 	);
 };
 

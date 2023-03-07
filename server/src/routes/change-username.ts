@@ -7,7 +7,7 @@ const changeUserName = function (req: Request, res: Response) {
 	const { user, group }: { user: IUser; group: IGroup } = req.body;
 	if (!store[group.name]) {
 		console.log(`[/api/group/change-username] Group not found: ${group.name}`);
-		return res.status(200).json({ err: "Group not found" });
+		return res.status(200).json({ group, err: "Group not found" });
 	}
 	// TODO: GQL groupUser()
 	const ulist = store[group.name].users.map((u: IGroupUser) => {

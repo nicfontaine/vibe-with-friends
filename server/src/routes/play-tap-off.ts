@@ -9,7 +9,6 @@ const playTapOff = function (req: Request, res: Response) {
 		console.log(`[/api/group/play-tap-off] Group not found: ${group.name}`);
 		return res.status(200).json({ err: "Group not found" });
 	}
-	// TODO: GQL groupEvent()
 	store[group.name].lastEvent = Date.now();
 	pusher.trigger(group.name, "play-tap-off", {
 		message: user,

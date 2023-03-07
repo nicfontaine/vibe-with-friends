@@ -1,0 +1,79 @@
+scalar DateTime
+
+# Types
+type User {
+	id: ID
+	uid: ID
+	name: String
+	isOwner: Boolean
+}
+type Group {
+	id: ID
+	name: String
+	ownerID: String
+	lastEvent: DateTime
+	users: [GroupUser]
+}
+type GroupUser {
+	id: ID
+	uid: String
+	name: String
+	isOwner: Boolean
+}
+
+# Inputs
+input GroupOwnerInput {
+	uid: ID!
+	name: String!
+}
+input GroupInput {
+	name: String!
+	ownerID: String!
+	lastEvent: DateTime!
+	users: [GroupUserInput]
+}
+input DeleteGroupInput {
+	id: ID!
+}
+input GroupUserInput {
+	uid: ID!
+	name: String!
+	isOwner: Boolean!
+}
+input DeleteGroupUserInput {
+	id: ID!
+}
+input GroupUserNameInput {
+	uid: ID!
+	name: String!
+}
+input SheetInput {
+	bpm: Int!
+	song: [Int!]!
+}
+
+# Queries
+type Query {
+	hello: String
+	# Group
+	group(ID: ID!): Group
+	allGroups: [Group]
+	# Group User
+	groupUser(ID: ID!, UID: ID!): GroupUser
+}
+
+# Mutations
+type Mutation {
+	# Group
+	createGroup(user: GroupOwnerInput!): Group!
+	deleteGroup(ID: ID!): String!
+	groupEvent(ID: ID!): Group
+	# Group User
+	addGroupUser(ID: ID!, user: GroupUserInput!): Group!
+	deleteGroupUser(ID: ID!, user: GroupUserInput!): Group!
+	setGroupUserName(ID: ID!, user: GroupUserNameInput!): Group!
+	# Events
+	playTapOn(ID: ID!, user: GroupUserInput!): Group!
+	playTapOff(ID: ID!, user: GroupUserInput!): Group!
+	playSync(ID: ID!, sheet: SheetInput!): Group!
+}

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { IUser, IGroup, IGroupUser } from "../types";
+import { IUser, IGroup } from "../types";
 import store from "../store";
 import { pusher } from "../app";
 
@@ -9,7 +9,6 @@ const playTapOn = function (req: Request, res: Response) {
 		console.log(`[/api/group/play-tap-on] Group not found: ${group.name}`);
 		return res.status(200).json({ err: "Group not found" });
 	}
-	// TODO: GQL groupEvent()
 	store[group.name].lastEvent = Date.now();
 	pusher.trigger(group.name, "play-tap-on", {
 		message: user,

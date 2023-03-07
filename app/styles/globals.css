@@ -83,6 +83,7 @@ main {
 .nav-main .button-container,
 main .button-container {
 	display: flex;
+	position: relative;
 }
 main .button-container.center {
 	top: 50%;
@@ -98,10 +99,22 @@ main .button-container.center {
 	/* align-items: flex-end; */
 	justify-content: flex-end;
 }
+.btn-play-sync-loading {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	text-align: center;
+	font-weight: initial;
+	transform: translateY(100%);
+	opacity: 0.6;
+}
+
 button {
 	font-family: inherit;
 	letter-spacing: 0.5px;
 	border-radius: 0.5rem;
+	position: relative;
 	background: transparent;
 	color: rgba(255, 255, 255, 0.85);
 	font-weight: 600;

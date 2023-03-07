@@ -43,14 +43,12 @@ const groupJoin = function (req: Request, res: Response) {
 	} else {
 		// User exists in group
 		console.log(`[/api/group/join] User already in group: ${group.name}`);
-		// TODO: GQL groupUser()
 		const ulist = store[group.name].users.map((u: IGroupUser) => {
 			if (u.uid !== user.uid) return u;
 			u.isOwner = false;
 			return u;
 		});
 		store[group.name].users = ulist;
-		// store[group.name].users[user.uid].isOwner = false;
 	}
 
 	group.users = store[group.name].users;

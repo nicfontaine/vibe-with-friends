@@ -2,9 +2,11 @@ import { createSlice } from "@reduxjs/toolkit";
 
 interface IStatus {
 	text: string;
+	playSyncLoading: boolean;
 }
 const initialState: IStatus = {
 	text: "",
+	playSyncLoading: false,
 };
 
 export const statusSlice = createSlice({
@@ -14,11 +16,15 @@ export const statusSlice = createSlice({
 		setStatusMsg: (state, action) => {
 			state.text = action.payload;
 		},
+		setPlaySyncLoading: (state, action) => {
+			state.playSyncLoading = action.payload;
+		},
 	},
 });
 
 export const {
 	setStatusMsg,
+	setPlaySyncLoading,
 } = statusSlice.actions;
 
 export default statusSlice.reducer;

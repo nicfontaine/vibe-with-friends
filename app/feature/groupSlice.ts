@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { IGroup, IGroupUser } from "../interfaces/types";
+import { IGroup } from "../interfaces/types";
 
 const initialState: IGroup = {
 	name: "",
