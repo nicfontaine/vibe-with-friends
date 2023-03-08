@@ -2,12 +2,11 @@ import { ChangeEvent, KeyboardEvent, MouseEvent, useEffect, useRef, useState } f
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "../app/store";
 import { setUserName } from "../feature/userSlice";
-import changeGroupUserName from "./../util/change-group-username";
 import { RiSendPlane2Fill } from "react-icons/ri";
 import { setDialogUserName } from "../feature/dialogSlice";
-import { deleteGroup, setGroupUsers } from "../feature/groupSlice";
-import { setStatusMsg } from "../feature/statusSlice";
-import { useRouter } from "next/router";
+import { setGroupUsers } from "../feature/groupSlice";
+import { useMutation } from "@apollo/client";
+import SET_GROUP_USER_NAME from "../apollo/mutations/SetGroupUserName";
 
 interface IProps {
 	maxWidth?: number;
@@ -16,14 +15,17 @@ interface IProps {
 const UserNameDialog = function ({ maxWidth }: IProps) {
 
 	const dispatch = useDispatch();
-	const router = useRouter();
 	const inputRef = useRef<HTMLInputElement>(null);
 	const containerRef = useRef<HTMLDivElement>(null);
 	const userStore = useAppSelector((state) => state.user);
 	const groupStore = useAppSelector((state) => state.group);
 	const dialogStore = useAppSelector((state) => state.dialog);
-
 	const [name, setName] = useState(userStore.name);
+	const [setGroupUserName, { data }] = useMutation(SET_GROUP_USER_NAME);
+
+	if (data) {
+		dispatch(setGroupUsers(data.setGroupUserName.group.users));
+	}
 
 	// Display
 	useEffect(() => {
@@ -33,15 +35,10 @@ const UserNameDialog = function ({ maxWidth }: IProps) {
 	}, [dialogStore.dialogUserName]);
 
 	const updateUserName = async function (): Promise<void> {
-		const res = await changeGroupUserName(userStore, groupStore);
-		const { user, group } = res;
-		if (res.err) {
-			dispatch(deleteGroup());
-			dispatch(setStatusMsg(res.err));
-			router.push("/", undefined, { shallow: true });
-			return;
-		}
-		dispatch(setGroupUsers(group.users));
+		setGroupUserName({
+			variables: { groupName: groupStore.name, user: userStore },
+		});
+		// TODO: Handle error
 		if (inputRef.current !== null) {
 			inputRef.current.blur();
 		}
@@ -50,8 +47,11 @@ const UserNameDialog = function ({ maxWidth }: IProps) {
 	// Changing name while in a group
 	useEffect(() => {
 		const n = userStore.name;
+		console.log("name change: " + userStore.name);
 		const nameInGroup = groupStore.users.filter((u) => u.name === n);
-		if (n && groupStore.name && nameInGroup) {
+		console.log(groupStore.users);
+		if (n && groupStore.name && !nameInGroup) {
+			console.log("updateUserName");
 			updateUserName();
 		}
 	}, [userStore.name]);
@@ -61,6 +61,7 @@ const UserNameDialog = function ({ maxWidth }: IProps) {
 			setName(e.target.value.toUpperCase());
 		},
 		submit (): void {
+			console.log(name);
 			dispatch(setUserName(name));
 			dispatch(setDialogUserName(false));
 		},

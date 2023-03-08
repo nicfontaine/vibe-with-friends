@@ -1,6 +1,6 @@
-import { IStore } from "./types";
+import { Store } from "./types";
 
 // TODO: Replace with DB
-const store: IStore = {};
+const store: Store = {};
 
 export default store;

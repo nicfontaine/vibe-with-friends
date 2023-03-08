@@ -1,4 +1,4 @@
-import { GroupUser, ISheet } from "./types";
+import { GroupUser, Sheet } from "./types";
 
 interface IRPusherChangeUserName {
 	message: {
@@ -24,7 +24,7 @@ interface IRPusherPlayTap {
 interface IRPusherPlaySync {
 	message: {
 		start: string;
-		sheet: ISheet;
+		sheet: Sheet;
 	}
 }
 

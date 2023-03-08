@@ -1,16 +1,5 @@
 import { model, Schema } from "mongoose";
-
-type GroupUser = {
-	uid: string;
-	name: string;
-	isOwner: boolean;
-};
-type Group = {
-	name: string;
-	ownerID: string;
-	lastEvent: number;
-	users: GroupUser[];
-};
+import { Group, GroupUser } from "../types";
 
 const groupUserSchema: Schema = new Schema<GroupUser>({
 	uid: {
@@ -45,4 +34,4 @@ const groupSchema: Schema = new Schema<Group>({
 	}],
 });
 
-export default model<Group>("Group", groupSchema);
+export default model<Group>("GroupModel", groupSchema);

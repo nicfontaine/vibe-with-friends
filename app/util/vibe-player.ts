@@ -1,8 +1,8 @@
-import { ISheet } from "../types/types";
+import { Sheet } from "../types/types";
 
 class VibePlayer {
 
-	static async play (sheet: ISheet) {
+	static async play (sheet: Sheet) {
 		VibePlayer.off();
 		const multiplier = 120 / sheet.bpm;
 		const timer = function (ms: number) {

@@ -9,6 +9,7 @@ type GroupUser = {
 	playing: boolean;
 };
 type Group = {
+	id: string,
 	name: string,
 	ownerID: string;
 	users: GroupUser[];

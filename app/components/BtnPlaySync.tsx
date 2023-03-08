@@ -1,38 +1,28 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRef } from "react";
 import sheets from "../util/sheets";
 import { useAppSelector } from "../app/store";
-import { ISheet } from "../types/types";
+import { Sheet } from "../types/types";
 import { FaPlayCircle } from "react-icons/fa";
-import { playSync } from "../util/play-sync";
-import { useDispatch } from "react-redux";
-import { deleteGroup } from "../feature/groupSlice";
-import { setStatusMsg } from "../feature/statusSlice";
-import { useRouter } from "next/router";
 import { PulseLoader } from "react-spinners";
+import { useMutation } from "@apollo/client";
+import PLAY_SYNC from "../apollo/mutations/PlaySync";
 
 const BtnPlaySync = function () {
 	//
-	const dispatch = useDispatch();
-	const router = useRouter();
 	const userStore = useAppSelector((state) => state.user);
 	const groupStore = useAppSelector((state) => state.group);
 	const statusStore = useAppSelector((state) => state.status);
+	const [playSync] = useMutation(PLAY_SYNC);
 
 	const playerBoxRef = useRef<HTMLButtonElement>(null);
 	const [isRunning, setIsRunning] = useState(false);
 
-	const player = async (sheet: ISheet): Promise<void> => {
+	const player = async (sheet: Sheet): Promise<void> => {
 		if (isRunning) return;
 		setIsRunning(true);
-		const res = await playSync(groupStore.name, sheet);
-		if (res.err) {
-			dispatch(deleteGroup());
-			dispatch(setStatusMsg(res.err));
-			router.push("/", undefined, { shallow: true });
-			return;
-		}
-		// const { start } = res;
+		playSync({ variables: { ID: groupStore.id, sheet } });
+		// TODO: Handle error
 		setIsRunning(false);
 	};
 

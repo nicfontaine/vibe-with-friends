@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
-const CREATE_GROUP = gql`
-	mutation Mutation($user: GroupOwnerInput!) {
-		createGroup(user: $user) {
+const SET_GROUP_USER_NAME = gql`
+	mutation Mutation($ID: String!, $user: GroupUserInput!) {
+		setGroupUserName(ID: $ID, user: $user) {
 			user {
 				uid
 				name
@@ -23,4 +23,4 @@ const CREATE_GROUP = gql`
 	}
 `;
 
-export default CREATE_GROUP;
+export default SET_GROUP_USER_NAME;

@@ -14,12 +14,12 @@ type Group = {
 	lastEvent: number;
 	users: GroupUser[];
 };
-type IStore = {
+type Store = {
 	[key: string]: Group;
 };
-type ISheet = {
+type Sheet = {
 	bpm: number;
 	song: number[];
 };
 
-export type { User, Group, GroupUser, IStore, ISheet };
+export type { User, Group, GroupUser, Store, Sheet };

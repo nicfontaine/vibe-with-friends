@@ -1,11 +1,9 @@
-import { MouseEvent, TouchEvent, useEffect, useRef, useCallback } from "react";
+import { MouseEvent, useEffect, useRef } from "react";
 import { useAppSelector } from "../app/store";
 import { MdOutlineSendToMobile } from "react-icons/md";
-import { playTapOn, playTapOff } from "../util/play-tap";
-import { useDispatch } from "react-redux";
-import { useRouter } from "next/router";
-import { deleteGroup } from "../feature/groupSlice";
-import { setStatusMsg } from "../feature/statusSlice";
+import PLAY_TAP_OFF from "../apollo/mutations/PlayTapOff";
+import PLAY_TAP_ON from "../apollo/mutations/PlayTapOn";
+import { useMutation } from "@apollo/client";
 
 interface IProps {
 	setIsTapPlaying: (value: boolean) => void;
@@ -14,8 +12,10 @@ interface IProps {
 const BtnPlayTap = function ({ setIsTapPlaying }: IProps) {
 
 	const btnRef = useRef<HTMLDivElement>(null);
-	const dispatch = useDispatch();
-	const router = useRouter();
+	const user = useAppSelector((state) => state.user);
+	const group = useAppSelector((state) => state.group);
+	const [playTapOn] = useMutation(PLAY_TAP_ON);
+	const [playTapOff] = useMutation(PLAY_TAP_OFF);
 
 	useEffect(() => {
 		// Only works, for mobile, by adding later
@@ -24,28 +24,18 @@ const BtnPlayTap = function ({ setIsTapPlaying }: IProps) {
 
 	const playOn = async function () {
 		btnOn();
-		const res = await playTapOn(user, group);
-		if (res.err) {
-			dispatch(deleteGroup());
-			dispatch(setStatusMsg(res.err));
-			router.push("/", undefined, { shallow: true });
-			return;
-		}
+		playTapOff({
+			variables: { ID: group.id, user: user },
+		});
+		// TODO: Handle error
 	};
 
 	const playOff = async function () {
 		btnOff();
-		const res = await playTapOff(user, group);
-		if (res.err) {
-			dispatch(deleteGroup());
-			dispatch(setStatusMsg(res.err));
-			router.push("/", undefined, { shallow: true });
-			return;
-		}
+		playTapOn({
+			variables: { ID: group.id, user: user },
+		});
 	};
-	
-	const user = useAppSelector((state) => state.user);
-	const group = useAppSelector((state) => state.group);
 
 	const handleMouseStart = async function (e: MouseEvent<HTMLElement>) {
 		playOn();

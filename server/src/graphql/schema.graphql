@@ -2,7 +2,6 @@ scalar DateTime
 
 # Types
 type User {
-	id: ID
 	uid: ID
 	name: String
 	isOwner: Boolean
@@ -19,6 +18,10 @@ type GroupUser {
 	uid: String
 	name: String
 	isOwner: Boolean
+}
+type UserAndGroup {
+	user: User
+	group: Group
 }
 
 # Inputs
@@ -37,7 +40,7 @@ input DeleteGroupInput {
 	id: ID!
 }
 input GroupUserInput {
-	uid: ID!
+	uid: ID
 	name: String!
 	isOwner: Boolean!
 }
@@ -66,15 +69,15 @@ type Query {
 # Mutations
 type Mutation {
 	# Group
-	createGroup(user: GroupOwnerInput!): Group!
-	deleteGroup(ID: ID!): String!
-	groupEvent(ID: ID!): Group
+	createGroup(user: GroupOwnerInput!): UserAndGroup!
+	deleteGroup(ID: String!): String!
+	groupEvent(ID: String!): Group
 	# Group User
-	addGroupUser(ID: ID!, user: GroupUserInput!): Group!
-	deleteGroupUser(ID: ID!, user: GroupUserInput!): Group!
-	setGroupUserName(ID: ID!, user: GroupUserNameInput!): Group!
+	addGroupUser(groupName: String!, user: GroupUserInput!): UserAndGroup!
+	deleteGroupUser(ID: String!, user: GroupUserInput!): Group!
+	setGroupUserName(ID: String!, user: GroupUserNameInput!): Group!
 	# Events
-	playTapOn(ID: ID!, user: GroupUserInput!): Group!
-	playTapOff(ID: ID!, user: GroupUserInput!): Group!
-	playSync(ID: ID!, sheet: SheetInput!): Group!
+	playTapOn(ID: String!, user: GroupUserInput!): Group!
+	playTapOff(ID: String!, user: GroupUserInput!): Group!
+	playSync(ID: String!, sheet: SheetInput!): Group!
 }

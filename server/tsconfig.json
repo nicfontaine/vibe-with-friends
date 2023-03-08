@@ -15,6 +15,6 @@
 		"resolveJsonModule": true,
 		"isolatedModules": true
 	},
-	"include": ["**/*.ts", "**/*.tsx", "src/**/*"],
+	"include": ["**/*.ts", "src/**/*", "**/*.graphql"],
 	"exclude": ["node_modules"]
 }

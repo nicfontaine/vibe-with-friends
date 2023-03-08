@@ -6,7 +6,6 @@ import NavMain from "../../components/NavMain";
 import UserNameDialog from "../../components/UserNameDialog";
 import { setDialogUserName } from "../../feature/dialogSlice";
 import { useAppSelector } from "../../app/store";
-import joinGroup from "../../util/join-group";
 import { deleteGroup, setGroup, setGroupUserPlaying, setGroupUsers } from "../../feature/groupSlice";
 import { setUser } from "../../feature/userSlice";
 import { IRPusherAddUser, IRPusherChangeUserName, IRPusherPlaySync, IRPusherPlayTap } from "../../types/types-pusher-return";
@@ -19,6 +18,8 @@ import BtnPlayTap from "../../components/BtnPlayTap";
 import BtnCreateGroup from "../../components/BtnCreateGroup";
 import BtnPlaySync from "../../components/BtnPlaySync";
 import Pusher from "pusher-js";
+import { useMutation } from "@apollo/client";
+import ADD_GROUP_USER from "../../apollo/mutations/AddGroupUser";
 // Pusher.logToConsole = true;
 const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY as string, {
 	cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER as string,
@@ -36,14 +37,13 @@ const Group = function () {
 	const [isTapPlaying, setIsTapPlaying] = useState(false);
 
 	useEffect(() => {
+		console.log("name change: " + userStore.name);
+	}, [userStore.name]);
+
+	useEffect(() => {
 		// pusher.unbind();
 		// pusher.unsubscribe(groupStore.name);
 		// pusher.disconnect();
-		// return () => {
-		// 	pusher.unbind();
-		// 	pusher.unsubscribe(groupStore.name);
-		// 	pusher.disconnect();
-		// };
 		return () => {
 			console.log("[gid] unmount");
 		};
@@ -60,23 +60,30 @@ const Group = function () {
 
 	useEffect(() => {
 		if (userStore.name) {
-			if (gid && !groupStore.name) {
+			if (gid && !groupStore.name.length) {
+				console.log(groupStore.name);
 				join(gid.toString());
 			}
 		}
 	}, [userStore.name]);
 
-	const join = async function (gid: string): Promise<void> {
-		//
-		const res = await joinGroup(userStore, gid);
-		if (res.err) {
-			dispatch(deleteGroup());
-			dispatch(setStatusMsg(res.err));
-			router.push("/", undefined, { shallow: true });
-			return;
-		}
-		const { user, group } = res;
+	const [addGroupUser, { data, loading, error }] = useMutation(ADD_GROUP_USER);
+
+	if (loading) {
+		// TODO: Loading icon
+		console.log("Loading...");
+	}
+	if (error) {
+		dispatch(setStatusMsg(error.message));
+		dispatch(deleteGroup());
+		router.push("/", undefined, { shallow: true });
+		return;
+	}
+	if (data) {
+
+		const { user, group } = data.addGroupUser;
 		batch(() => {
+			console.log("addGroupUser (GQL)");
 			dispatch(setUser(user));
 			dispatch(setGroup(group));
 		});
@@ -111,6 +118,15 @@ const Group = function () {
 				player(data.message.sheet);
 				dispatch(setPlaySyncLoading(false));
 			}, delta);
+		});
+	}
+
+	const join = async function (gid: string): Promise<void> {
+		addGroupUser({
+			variables: { 
+				groupName: gid,
+				user: userStore,
+			},
 		});
 	};
 
