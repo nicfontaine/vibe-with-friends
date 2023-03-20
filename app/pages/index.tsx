@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import Head from "next/head";
 import BtnCreateGroup from "../components/BtnCreateGroup";
-import { useAppSelector } from "../app/store";
 import JoinGroupDialog from "../components/JoinGroupDialog";
 import UserNameDialog from "../components/UserNameDialog";
 import NavMain from "../components/NavMain";
@@ -15,7 +14,6 @@ import NavigatorDialog from "../components/NavigatorDialog";
 const Home = function () {
 	//
 	const dispatch = useDispatch();	
-	const groupStore = useAppSelector((state) => state.group);
 
 	useEffect(() => {
 		// dispatch(setStatusMsg(""));
