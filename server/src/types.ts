@@ -1,3 +1,5 @@
+import { ObjectId } from "mongoose";
+
 type User = {
 	uid: string;
 	name: string;
@@ -21,5 +23,8 @@ type Sheet = {
 	bpm: number;
 	song: number[];
 };
+type OID = {
+	ID: ObjectId;
+};
 
-export type { User, Group, GroupUser, Store, Sheet };
+export type { User, Group, GroupUser, Store, Sheet, OID };

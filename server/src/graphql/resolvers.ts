@@ -1,12 +1,8 @@
-import { ObjectId } from "mongoose";
 import GroupModel from "../models/Group";
 import createGroupID from "../util/create-group-id";
 import { v4 as uuidv4 } from "uuid";
-import { Group, GroupUser } from "../types";
-import { pusher } from "../app";
-interface OID {
-	ID: ObjectId;
-}
+import { Group, GroupUser, OID } from "../types";
+import { pusher } from "../expr";
 
 const resolvers = {
 
@@ -36,7 +32,7 @@ const resolvers = {
 
 		async createGroup (_: any, args: any) {
 			const { user } = args;
-			const uid = user.uid || uuidv4();
+			const uid: string = user.uid || uuidv4();
 			const group = new GroupModel({
 				name: createGroupID(),
 				ownerID: uid,

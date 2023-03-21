@@ -4,17 +4,18 @@
 		"allowJs": true,
 		"skipLibCheck": true,
 		"outDir": "dist",
+		"rootDir": "src",
 		"strict": true,
 		"forceConsistentCasingInFileNames": true,
-		"noEmit": true,
 		"incremental": true,
 		"esModuleInterop": true,
-		"module": "nodenext",
+		"allowSyntheticDefaultImports": true,
+		"module": "commonjs",
 		"moduleResolution": "node",
 		"sourceMap": true,
 		"resolveJsonModule": true,
 		"isolatedModules": true
 	},
-	"include": ["**/*.ts", "src/**/*", "**/*.graphql"],
+	"include": ["src"],
 	"exclude": ["node_modules"]
 }

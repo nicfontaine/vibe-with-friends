@@ -1,0 +1,23 @@
+version: "3"
+
+networks:
+  vibe-net:
+    driver: bridge
+
+services:
+  fe:
+    build: ./app
+    container_name: vibe-fe
+    restart: unless-stopped
+    ports:
+      - "3600:3600"
+    networks:
+      - vibe-net
+  be:
+    build: ./server
+    container_name: vibe-be
+    restart: unless-stopped
+    ports:
+      - "3680:3680"
+    networks:
+      - vibe-net
