@@ -1,8 +1,6 @@
 import { MouseEvent } from "react";
 import { useAppDispatch, useAppSelector } from "../app/store";
 import { setUser } from "../feature/userSlice";
-import { setGroup } from "../feature/groupSlice";
-import { batch } from "react-redux";
 import { useRouter } from "next/router";
 import { setStatusMsg } from "../feature/statusSlice";
 import { AiOutlineAppstoreAdd } from "react-icons/ai";
@@ -20,16 +18,13 @@ const BtnCreateGroup = function ({ size, text }: IProps) {
 	//
 	const dispatch = useAppDispatch();
 	const router = useRouter();
-	const userStore = useAppSelector((state) => state.user);
+	const user = useAppSelector((state) => state.user);
 
 	const [createGroup, { data, loading, error }] = useMutation(CREATE_GROUP);
 	
 	const groupCreateResponse = async function (group: Group, user: User) {
 		console.log("createGroup (GQL)");
-		batch(() => {
-			dispatch(setGroup(group));
-			dispatch(setUser(user));
-		});
+		dispatch(setUser(user));
 		const url = `${window.location.origin}/group/${group.name}`;
 		await urlShare(url);
 		router.push({ pathname: "/group/[gid]", query: { gid: group.name } });
@@ -40,6 +35,7 @@ const BtnCreateGroup = function ({ size, text }: IProps) {
 		console.log("Loading...");
 	}
 	if (error) {
+		console.log(error.message);
 		dispatch(setStatusMsg(error.message));
 	}
 	if (data) {
@@ -49,9 +45,7 @@ const BtnCreateGroup = function ({ size, text }: IProps) {
 	const handleCreateGroup = async function (e: MouseEvent<HTMLButtonElement>) {
 		(e.target as HTMLButtonElement)?.blur();
 		createGroup({
-			variables: {
-				user: userStore,
-			},
+			variables: { user },
 		});
 	};
 

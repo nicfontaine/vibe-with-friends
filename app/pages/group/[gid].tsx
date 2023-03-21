@@ -6,7 +6,7 @@ import NavMain from "../../components/NavMain";
 import UserNameDialog from "../../components/UserNameDialog";
 import { setDialogUserName } from "../../feature/dialogSlice";
 import { useAppSelector } from "../../app/store";
-import { deleteGroup, setGroup, setGroupUserPlaying, setGroupUsers } from "../../feature/groupSlice";
+import { deleteGroup, setGroupUserPlaying, setGroupUsers } from "../../feature/groupSlice";
 import { setUser } from "../../feature/userSlice";
 import { IRPusherAddUser, IRPusherChangeUserName, IRPusherPlaySync, IRPusherPlayTap } from "../../types/types-pusher-return";
 import { setPlaySyncLoading, setStatusMsg } from "../../feature/statusSlice";
@@ -20,25 +20,25 @@ import BtnPlaySync from "../../components/BtnPlaySync";
 import Pusher from "pusher-js";
 import { useMutation } from "@apollo/client";
 import ADD_GROUP_USER from "../../apollo/mutations/AddGroupUser";
+import { PuffLoader } from "react-spinners";
 // Pusher.logToConsole = true;
 const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY as string, {
 	cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER as string,
 });
 
-const Group = function () {
+const GroupPage = function () {
 
 	const dispatch = useDispatch();
 	const router = useRouter();
 	const { gid } = router.query;
 
+	let pageTitle = process.env.NEXT_PUBLIC_APP_NAME;
 	const userStore = useAppSelector((state) => state.user);
-	const groupStore = useAppSelector((state) => state.group);
+	// const [group, setGroup] = useState<Group | undefined>(undefined);
 
 	const [isTapPlaying, setIsTapPlaying] = useState(false);
 
-	useEffect(() => {
-		console.log("name change: " + userStore.name);
-	}, [userStore.name]);
+	const [addGroupUser, { data, loading, error }] = useMutation(ADD_GROUP_USER);
 
 	useEffect(() => {
 		// pusher.unbind();
@@ -50,6 +50,7 @@ const Group = function () {
 	}, []);
 	
 	useEffect(() => {
+		console.log("GID change: " + gid);
 		if (!gid) return;
 		if (!userStore.name) {
 			dispatch(setDialogUserName(true));
@@ -58,35 +59,27 @@ const Group = function () {
 		join(gid.toString());
 	}, [gid]);
 
+	// Join group if user changes name, and not already in GID group
 	useEffect(() => {
 		if (userStore.name) {
-			if (gid && !groupStore.name.length) {
-				console.log(groupStore.name);
+			if (gid && data?.addGroupUser?.group && !data?.addGroupUser?.group?.name.length) {
+				console.log(data.addGroupUser.group.name);
 				join(gid.toString());
 			}
 		}
 	}, [userStore.name]);
 
-	const [addGroupUser, { data, loading, error }] = useMutation(ADD_GROUP_USER);
-
-	if (loading) {
-		// TODO: Loading icon
-		console.log("Loading...");
-	}
 	if (error) {
 		dispatch(setStatusMsg(error.message));
-		dispatch(deleteGroup());
+		// dispatch(deleteGroup());
 		router.push("/", undefined, { shallow: true });
 		return;
 	}
 	if (data) {
 
 		const { user, group } = data.addGroupUser;
-		batch(() => {
-			console.log("addGroupUser (GQL)");
-			dispatch(setUser(user));
-			dispatch(setGroup(group));
-		});
+		dispatch(setUser(user));
+		if (group?.name) pageTitle = `${pageTitle} - ${group.name}`;
 
 		const channel = pusher.subscribe(group.name);
 
@@ -122,6 +115,7 @@ const Group = function () {
 	}
 
 	const join = async function (gid: string): Promise<void> {
+		console.log("JOIN");
 		addGroupUser({
 			variables: { 
 				groupName: gid,
@@ -134,9 +128,6 @@ const Group = function () {
 		await VibePlayer.play(sheet);
 	};
 
-	let pageTitle = process.env.NEXT_PUBLIC_APP_NAME;
-	if (groupStore.name) pageTitle = `${pageTitle} - ${groupStore.name}`;
-
 	return (
 		<>
 			
@@ -144,32 +135,49 @@ const Group = function () {
 				<title>{pageTitle}</title>
 			</Head>
 
-			<NavMain />
-			
-			<UsersGrid
-				isTapPlaying={isTapPlaying}
-			/>
-
-			<div className="main-bottom">
-				<div className="hide-larger-med">
-					<div className="d-flx button-container">
-						<BtnCreateGroup
-							size="med"
-							text="New Group"
-						></BtnCreateGroup>
-						<BtnPlaySync></BtnPlaySync>
+			{loading ? (
+				<>
+					<div className="loading-center mg-t-10">
+						<PuffLoader color="#aaaaaa" size={70} className="center loading-spinner" />
 					</div>
-				</div>
-				<BtnPlayTap
-					setIsTapPlaying={setIsTapPlaying}
-				/>
-			</div>
+				</>
+			) : null}
 
-			<UserNameDialog maxWidth={250} />
-			<JoinGroupDialog maxWidth={350} />
+			{data?.addGroupUser?.group ? (
+				<>
+					
+					<NavMain group={data?.addGroupUser?.group} />
+
+					<UsersGrid
+						group={data.addGroupUser.group}
+						isTapPlaying={isTapPlaying}
+					/>
+
+					<div className="main-bottom">
+						<div className="hide-larger-med">
+							<div className="d-flx button-container">
+								<BtnCreateGroup
+									size="med"
+									text="New Group"
+								></BtnCreateGroup>
+								<BtnPlaySync group={data.addGroupUser.group}></BtnPlaySync>
+							</div>
+						</div>
+						<BtnPlayTap
+							group={data.addGroupUser.group}
+							setIsTapPlaying={setIsTapPlaying}
+						/>
+					</div>
+
+					<JoinGroupDialog maxWidth={350} />
+				</>
+			) : null}
+
+			<UserNameDialog group={data?.addGroupUser?.group} maxWidth={250} />
+			
 		</>
 	);
 
 };
 
-export default Group;
+export default GroupPage;

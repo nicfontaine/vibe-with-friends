@@ -7,18 +7,20 @@ import { setDialogUserName } from "../feature/dialogSlice";
 import { setGroupUsers } from "../feature/groupSlice";
 import { useMutation } from "@apollo/client";
 import SET_GROUP_USER_NAME from "../apollo/mutations/SetGroupUserName";
+import { Group, GroupUser } from "../types/types";
 
 interface IProps {
 	maxWidth?: number;
+	group: Group | undefined;
 }
 
-const UserNameDialog = function ({ maxWidth }: IProps) {
+const UserNameDialog = function ({ maxWidth, group }: IProps) {
 
 	const dispatch = useDispatch();
 	const inputRef = useRef<HTMLInputElement>(null);
 	const containerRef = useRef<HTMLDivElement>(null);
 	const userStore = useAppSelector((state) => state.user);
-	const groupStore = useAppSelector((state) => state.group);
+	// const groupStore = useAppSelector((state) => state.group);
 	const dialogStore = useAppSelector((state) => state.dialog);
 	const [name, setName] = useState(userStore.name);
 	const [setGroupUserName, { data }] = useMutation(SET_GROUP_USER_NAME);
@@ -36,7 +38,7 @@ const UserNameDialog = function ({ maxWidth }: IProps) {
 
 	const updateUserName = async function (): Promise<void> {
 		setGroupUserName({
-			variables: { groupName: groupStore.name, user: userStore },
+			variables: { groupName: group?.name, user: userStore },
 		});
 		// TODO: Handle error
 		if (inputRef.current !== null) {
@@ -47,10 +49,10 @@ const UserNameDialog = function ({ maxWidth }: IProps) {
 	// Changing name while in a group
 	useEffect(() => {
 		const n = userStore.name;
-		console.log("name change: " + userStore.name);
-		const nameInGroup = groupStore.users.filter((u) => u.name === n);
-		console.log(groupStore.users);
-		if (n && groupStore.name && !nameInGroup) {
+		// console.log("name change: " + userStore.name);
+		const nameInGroup = group?.users?.filter((u: GroupUser) => u.name === n);
+		// console.log(groupStore.users);
+		if (n && group?.name && !nameInGroup) {
 			console.log("updateUserName");
 			updateUserName();
 		}

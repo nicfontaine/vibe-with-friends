@@ -17,8 +17,8 @@ const Home = function () {
 
 	useEffect(() => {
 		// dispatch(setStatusMsg(""));
-		dispatch(deleteGroup());
-		dispatch(setUserIsOwner(false));
+		// dispatch(deleteGroup());
+		// dispatch(setUserIsOwner(false));
 		return () => {
 			dispatch(setDialogJoinGroup(false));
 		};

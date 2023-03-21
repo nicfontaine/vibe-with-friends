@@ -1,4 +1,4 @@
-import { MouseEvent, useEffect, useState } from "react";
+import { MouseEvent } from "react";
 import BtnPlaySync from "../components/BtnPlaySync";
 import BtnCreateGroup from "./BtnCreateGroup";
 import { useRouter } from "next/router";
@@ -9,32 +9,23 @@ import { batch, useDispatch } from "react-redux";
 import { setUserIsOwner } from "../feature/userSlice";
 import { deleteGroup } from "../feature/groupSlice";
 import { setDialogUserName } from "../feature/dialogSlice";
-import { HiOutlineUserGroup } from "react-icons/hi";
 import StatusMsg from "./StatusMsg";
-import copyToClipboard from "../util/copy-to-clipboard";
-import { setStatusMsg } from "../feature/statusSlice";
+import { Group } from "../types/types";
+import NavGroupCode from "./NavGroupCode";
 
-const NavMain = function () {
+interface IProps {
+	group: Group
+}
+
+const NavMain = function ({ group }: IProps) {
 
 	const dispatch = useDispatch();
 	const router = useRouter();
 	const userStore = useAppSelector((state) => state.user);
-	const groupStore = useAppSelector((state) => state.group);
-	const [groupDisplayString, setGroupDisplayString] = useState("");
 
-	useEffect(() => {
-		dispatch(deleteGroup());
-	}, []);
-
-	useEffect(() => {
-		if (!groupStore.name.length) return;
-		let i = 1;
-		const t = setInterval(() => {
-			if (i >= groupStore.name.length) clearInterval(t);
-			setGroupDisplayString(groupStore.name.substring(0, i));
-			i++;
-		}, 20);
-	}, [groupStore.name]);
+	// useEffect(() => {
+	// 	dispatch(deleteGroup());
+	// }, []);
 
 	const handleButtonHome = function (e: MouseEvent<HTMLButtonElement>): void {
 		batch(() => {
@@ -46,11 +37,6 @@ const NavMain = function () {
 
 	const handleButtonUser = function (e: MouseEvent<HTMLButtonElement>): void {
 		dispatch(setDialogUserName(true));
-	};
-
-	const handleGroupCopy = function (): void {
-		copyToClipboard(groupStore.name);
-		dispatch(setStatusMsg("Copied Group Name"));
 	};
 
 	return (
@@ -67,7 +53,7 @@ const NavMain = function () {
 					>
 						<AiOutlineHome className="icon-main" size="45" />
 					</button>
-					{groupStore.name.length ? (
+					{group?.name.length ? (
 						<div className="hide-smaller-med align-center mg-l-4">
 							<BtnCreateGroup
 								size="med"
@@ -79,22 +65,12 @@ const NavMain = function () {
 					
 				<div className="center">
 					<h1 className="heading">{process.env.NEXT_PUBLIC_APP_NAME}</h1>
-					{groupStore.name && (
-						<div className="nav-group-code">
-							<span className="icon mg-r-2 d-flx flx-items-ctr">
-								<HiOutlineUserGroup size="20"></HiOutlineUserGroup>
-							</span>
-							<div
-								className="group"
-								onClick={handleGroupCopy}
-							>{groupDisplayString}</div>
-						</div>
-					)}
+					{group?.name ? <NavGroupCode group={group} /> : undefined}
 				</div>
 
 				<div className="button-container right">
 					<div className="hide-smaller-med align-center mg-r-4">
-						<BtnPlaySync></BtnPlaySync>
+						<BtnPlaySync group={group}></BtnPlaySync>
 					</div>
 					<button onClick={handleButtonUser} className="nav-btn nav-icon-user">
 						{userStore.isOwner == true ? (

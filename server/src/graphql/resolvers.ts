@@ -22,7 +22,7 @@ const resolvers = {
 		async groupUser (_: any, args: any) {
 			const group = await GroupModel.findById(args.ID);
 			if (!group) return null;
-			const user = group.users.find((e) => e.uid === args.UID);
+			const user = group.users.find((e: GroupUser) => e.uid === args.UID);
 			return user;
 		},
 
@@ -72,8 +72,9 @@ const resolvers = {
 				if (user.uid === group.ownerID) {
 					return { user, group };
 				}
-				const groupUser = group.users.find((e) => e.uid === user.uid);
+				const groupUser = group.users.find((e: GroupUser) => e.uid === user.uid);
 				if (!groupUser) {
+					user.uid = user.uid || uuidv4();
 					group.users.push(user);
 					pusher.trigger(group.name, "add-user", {
 						message: group,
@@ -88,7 +89,7 @@ const resolvers = {
 		async deleteGroupUser (_: any, args: any) {
 			const group = await GroupModel.findById(args.ID);
 			if (group) {
-				const userIndex = group.users.findIndex((e) => e.uid === args.user.id);
+				const userIndex = group.users.findIndex((e: GroupUser) => e.uid === args.user.id);
 				console.log(userIndex);
 				if (userIndex >= 0) {
 					group.users.splice(userIndex, 1);

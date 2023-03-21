@@ -4,7 +4,7 @@ import { Group, GroupUser } from "../types";
 const groupUserSchema: Schema = new Schema<GroupUser>({
 	uid: {
 		type: String,
-		required: true,
+		required: false,
 	},
 	name: {
 		type: String,

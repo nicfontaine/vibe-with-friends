@@ -26,7 +26,7 @@ type UserAndGroup {
 
 # Inputs
 input GroupOwnerInput {
-	uid: ID!
+	uid: ID
 	name: String!
 	isOwner: Boolean
 }

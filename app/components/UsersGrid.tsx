@@ -1,20 +1,22 @@
 import { useAppSelector } from "../app/store";
 import { VscGlobe } from "react-icons/vsc";
 import PuffLoader from "react-spinners/PuffLoader";
+import { Group } from "../types/types";
 
 interface IProps {
 	isTapPlaying: boolean;
+	group: Group | undefined;
 }
 
-const UsersGrid = function ({ isTapPlaying }: IProps) {
+const UsersGrid = function ({ isTapPlaying, group }: IProps) {
 
 	const user = useAppSelector((state) => state.user);
-	const group = useAppSelector((state) => state.group);
+	// const group = useAppSelector((state) => state.group);
 	
 	return (
 		<>
 			<div className="pd-t-8 user-grid">
-				{group.users ? group.users.map((u) => {
+				{group?.users ? group.users.map((u) => {
 					const isPlaying = u.playing ? "active-remote" : "";
 					const isUser = u.uid === user.uid ? "user" : "";
 					const styleTapPlay = isTapPlaying && u.uid === user.uid ? "active-user" : "";

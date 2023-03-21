@@ -4,16 +4,18 @@ import { MdOutlineSendToMobile } from "react-icons/md";
 import PLAY_TAP_OFF from "../apollo/mutations/PlayTapOff";
 import PLAY_TAP_ON from "../apollo/mutations/PlayTapOn";
 import { useMutation } from "@apollo/client";
+import { Group } from "../types/types";
 
 interface IProps {
 	setIsTapPlaying: (value: boolean) => void;
+	group: Group | undefined;
 }
 
-const BtnPlayTap = function ({ setIsTapPlaying }: IProps) {
+const BtnPlayTap = function ({ setIsTapPlaying, group }: IProps) {
 
 	const btnRef = useRef<HTMLDivElement>(null);
 	const user = useAppSelector((state) => state.user);
-	const group = useAppSelector((state) => state.group);
+	// const group = useAppSelector((state) => state.group);
 	const [playTapOn] = useMutation(PLAY_TAP_ON);
 	const [playTapOff] = useMutation(PLAY_TAP_OFF);
 
@@ -25,7 +27,7 @@ const BtnPlayTap = function ({ setIsTapPlaying }: IProps) {
 	const playOn = async function () {
 		btnOn();
 		playTapOff({
-			variables: { ID: group.id, user: user },
+			variables: { ID: group?.id, user: user },
 		});
 		// TODO: Handle error
 	};
@@ -33,7 +35,7 @@ const BtnPlayTap = function ({ setIsTapPlaying }: IProps) {
 	const playOff = async function () {
 		btnOff();
 		playTapOn({
-			variables: { ID: group.id, user: user },
+			variables: { ID: group?.id, user: user },
 		});
 	};
 
@@ -66,7 +68,7 @@ const BtnPlayTap = function ({ setIsTapPlaying }: IProps) {
 	
 	return (
 		<>
-			{group.name &&
+			{group?.name &&
 				<div
 					ref={btnRef}
 					className="btn-tap-play"
