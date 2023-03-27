@@ -13,15 +13,15 @@ import {
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import storage from "redux-persist/lib/storage";
 import userSlice from "../feature/userSlice";
-import groupSlice from "../feature/groupSlice";
 import dialogSlice from "../feature/dialogSlice";
 import statusSlice from "../feature/statusSlice";
+import playTapSlice from "../feature/playTapSlice";
 
 const reducers = combineReducers({
 	user: userSlice,
-	group: groupSlice,
 	dialog: dialogSlice,
 	status: statusSlice,
+	playTap: playTapSlice,
 });
 
 const persistConfig = {

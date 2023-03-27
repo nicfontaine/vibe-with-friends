@@ -11,12 +11,12 @@ interface IProps {
 const UsersGrid = function ({ isTapPlaying, group }: IProps) {
 
 	const user = useAppSelector((state) => state.user);
-	// const group = useAppSelector((state) => state.group);
+	const playTap = useAppSelector((state) => state.playTap);
 	
 	return (
 		<>
 			<div className="pd-t-8 user-grid">
-				{group?.users ? group.users.map((u) => {
+				{group?.users && playTap?.users ? playTap.users.map((u) => {
 					const isPlaying = u.playing ? "active-remote" : "";
 					const isUser = u.uid === user.uid ? "user" : "";
 					const styleTapPlay = isTapPlaying && u.uid === user.uid ? "active-user" : "";

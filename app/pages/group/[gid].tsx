@@ -6,7 +6,7 @@ import NavMain from "../../components/NavMain";
 import UserNameDialog from "../../components/UserNameDialog";
 import { setDialogUserName } from "../../feature/dialogSlice";
 import { useAppSelector } from "../../app/store";
-import { deleteGroup, setGroupUserPlaying, setGroupUsers } from "../../feature/groupSlice";
+import { setPlayGroup, setGroupUserPlaying } from "../../feature/playTapSlice";
 import { setUser } from "../../feature/userSlice";
 import { IRPusherAddUser, IRPusherChangeUserName, IRPusherPlaySync, IRPusherPlayTap } from "../../types/types-pusher-return";
 import { setPlaySyncLoading, setStatusMsg } from "../../feature/statusSlice";
@@ -34,8 +34,6 @@ const GroupPage = function () {
 
 	let pageTitle = process.env.NEXT_PUBLIC_APP_NAME;
 	const userStore = useAppSelector((state) => state.user);
-	// const [group, setGroup] = useState<Group | undefined>(undefined);
-
 	const [isTapPlaying, setIsTapPlaying] = useState(false);
 
 	const [addGroupUser, { data, loading, error }] = useMutation(ADD_GROUP_USER);
@@ -50,7 +48,6 @@ const GroupPage = function () {
 	}, []);
 	
 	useEffect(() => {
-		console.log("GID change: " + gid);
 		if (!gid) return;
 		if (!userStore.name) {
 			dispatch(setDialogUserName(true));
@@ -75,20 +72,22 @@ const GroupPage = function () {
 		router.push("/", undefined, { shallow: true });
 		return;
 	}
-	if (data) {
-
+	
+	useEffect(() => {
+		if (!data) return;
 		const { user, group } = data.addGroupUser;
 		dispatch(setUser(user));
+		dispatch(setPlayGroup(group));
 		if (group?.name) pageTitle = `${pageTitle} - ${group.name}`;
 
 		const channel = pusher.subscribe(group.name);
 
 		// TODO: Cleanup
 		channel.bind("add-user", (data: IRPusherAddUser) => {
-			dispatch(setGroupUsers(data.message.users));
+			dispatch(setPlayGroup(data.message));
 		});
 		channel.bind("change-username", (data: IRPusherChangeUserName) => {
-			dispatch(setGroupUsers(data.message.users));
+			dispatch(setPlayGroup(data.message));
 		});
 		channel.bind("play-tap-on", (data: IRPusherPlayTap) => {
 			if (data.message.uid !== user.uid) {
@@ -112,10 +111,9 @@ const GroupPage = function () {
 				dispatch(setPlaySyncLoading(false));
 			}, delta);
 		});
-	}
+	}, [data]);
 
 	const join = async function (gid: string): Promise<void> {
-		console.log("JOIN");
 		addGroupUser({
 			variables: { 
 				groupName: gid,

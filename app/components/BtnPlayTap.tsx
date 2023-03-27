@@ -26,7 +26,7 @@ const BtnPlayTap = function ({ setIsTapPlaying, group }: IProps) {
 
 	const playOn = async function () {
 		btnOn();
-		playTapOff({
+		playTapOn({
 			variables: { ID: group?.id, user: user },
 		});
 		// TODO: Handle error
@@ -34,7 +34,7 @@ const BtnPlayTap = function ({ setIsTapPlaying, group }: IProps) {
 
 	const playOff = async function () {
 		btnOff();
-		playTapOn({
+		playTapOff({
 			variables: { ID: group?.id, user: user },
 		});
 	};

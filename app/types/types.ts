@@ -18,10 +18,21 @@ type Sheet = {
 	bpm: number;
 	song: number[];
 };
+type PlayTapUser = {
+	uid: string;
+	name: string;
+	playing: boolean;
+};
+type PlayTapGroup = {
+	id: string;
+	users: PlayTapUser[];
+};
 
 export type {
 	User,
 	Group,
 	GroupUser,
+	PlayTapUser,
+	PlayTapGroup,
 	Sheet,
 };

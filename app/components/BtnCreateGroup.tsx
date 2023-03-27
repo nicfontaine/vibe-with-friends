@@ -1,4 +1,4 @@
-import { MouseEvent } from "react";
+import { MouseEvent, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../app/store";
 import { setUser } from "../feature/userSlice";
 import { useRouter } from "next/router";
@@ -23,12 +23,17 @@ const BtnCreateGroup = function ({ size, text }: IProps) {
 	const [createGroup, { data, loading, error }] = useMutation(CREATE_GROUP);
 	
 	const groupCreateResponse = async function (group: Group, user: User) {
-		console.log("createGroup (GQL)");
 		dispatch(setUser(user));
 		const url = `${window.location.origin}/group/${group.name}`;
 		await urlShare(url);
 		router.push({ pathname: "/group/[gid]", query: { gid: group.name } });
 	};
+
+	useEffect(() => {
+		if (data) {
+			groupCreateResponse(data.createGroup.group, data.createGroup.user);
+		}
+	}, [data]);
 
 	if (loading) {
 		// TODO: Loading icon
@@ -37,9 +42,6 @@ const BtnCreateGroup = function ({ size, text }: IProps) {
 	if (error) {
 		console.log(error.message);
 		dispatch(setStatusMsg(error.message));
-	}
-	if (data) {
-		groupCreateResponse(data.createGroup.group, data.createGroup.user);
 	}
 
 	const handleCreateGroup = async function (e: MouseEvent<HTMLButtonElement>) {

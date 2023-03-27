@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRef } from "react";
 import sheets from "../util/sheets";
 import { useAppSelector } from "../app/store";
@@ -15,12 +15,19 @@ interface IProps {
 const BtnPlaySync = function ({ group }: IProps) {
 	//
 	const userStore = useAppSelector((state) => state.user);
-	// const groupStore = useAppSelector((state) => state.group);
 	const statusStore = useAppSelector((state) => state.status);
 	const [playSync] = useMutation(PLAY_SYNC);
 
 	const playerBoxRef = useRef<HTMLButtonElement>(null);
 	const [isRunning, setIsRunning] = useState(false);
+
+	useEffect(() => {
+		if (userStore.isOwner && group?.name) {
+			playerBoxRef?.current?.classList.remove("hide");
+		} else {
+			playerBoxRef?.current?.classList.add("hide");
+		}
+	}, [group]);
 
 	const player = async (sheet: Sheet): Promise<void> => {
 		if (isRunning) return;
@@ -32,13 +39,11 @@ const BtnPlaySync = function ({ group }: IProps) {
 		}
 	};
 
-	const btnShow = userStore.isOwner && group?.name ? "show" : "hide";
-
 	return (
 		<>
 			<button
 				ref={playerBoxRef}
-				className={`btn-med btn-clear ${btnShow}`}
+				className={`btn-med btn-clear hide`}
 				onClick={() => player(sheets.jingle)}
 			>
 				<span className="icon d-flx mg-r-2">

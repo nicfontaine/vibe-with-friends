@@ -49,9 +49,7 @@ const UserNameDialog = function ({ maxWidth, group }: IProps) {
 	// Changing name while in a group
 	useEffect(() => {
 		const n = userStore.name;
-		// console.log("name change: " + userStore.name);
 		const nameInGroup = group?.users?.filter((u: GroupUser) => u.name === n);
-		// console.log(groupStore.users);
 		if (n && group?.name && !nameInGroup) {
 			console.log("updateUserName");
 			updateUserName();

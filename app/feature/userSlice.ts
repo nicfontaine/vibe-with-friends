@@ -1,9 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { User } from "../types/types";
+import randomUsername from "../util/random-username";
 
 const initialState: User = {
 	uid: "",
-	name: "",
+	name: randomUsername(),
 	isOwner: false,
 };
 
