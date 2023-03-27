@@ -16,9 +16,6 @@ type Group = {
 	lastEvent: number;
 	users: GroupUser[];
 };
-type Store = {
-	[key: string]: Group;
-};
 type Sheet = {
 	bpm: number;
 	song: number[];
@@ -27,4 +24,4 @@ type OID = {
 	ID: ObjectId;
 };
 
-export type { User, Group, GroupUser, Store, Sheet, OID };
+export type { User, Group, GroupUser, Sheet, OID };
