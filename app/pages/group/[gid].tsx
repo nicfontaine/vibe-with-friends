@@ -102,6 +102,7 @@ const GroupPage = function () {
 			}
 		});
 		channel.bind("play-sync", (data: IRPusherPlaySync) => {
+			console.log("play sync");
 			const { start } = data.message;
 			dispatch(setPlaySyncLoading(true));
 			const delta = (new Date(start)).getTime() - Date.now();

@@ -146,7 +146,7 @@ const resolvers = {
 			const group = await GroupModel.findById(ID);
 			if (group) {
 				const start = new Date(Date.now() + 2 * 1000).toISOString();
-				pusher.trigger(args.ID, "play-sync", {
+				pusher.trigger(group.name, "play-sync", {
 					message: { start, sheet },
 				});
 				group.lastEvent = Date.now();
