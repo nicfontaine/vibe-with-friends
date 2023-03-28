@@ -9,7 +9,7 @@ import { useMutation } from "@apollo/client";
 import PLAY_SYNC from "../apollo/mutations/PlaySync";
 
 interface IProps {
-	group: Group | undefined;
+	group?: Group | undefined;
 }
 
 const BtnPlaySync = function ({ group }: IProps) {

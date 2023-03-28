@@ -8,6 +8,7 @@ import { useMutation } from "@apollo/client";
 import CREATE_GROUP from "../apollo/mutations/CreateGroup";
 import urlShare from "../util/url-share";
 import { Group, User } from "../types/types";
+import { PuffLoader, PulseLoader } from "react-spinners";
 
 interface IProps {
 	size?: string;
@@ -35,32 +36,36 @@ const BtnCreateGroup = function ({ size, text }: IProps) {
 		}
 	}, [data]);
 
-	if (loading) {
-		// TODO: Loading icon
-		console.log("Loading...");
-	}
-	if (error) {
-		console.log(error.message);
-		dispatch(setStatusMsg(error.message));
-	}
-
 	const handleCreateGroup = async function (e: MouseEvent<HTMLButtonElement>) {
 		(e.target as HTMLButtonElement)?.blur();
-		createGroup({
-			variables: { user },
-		});
+		try {
+			await createGroup({
+				variables: { user },
+			});
+		} catch (err: any) {
+			dispatch(setStatusMsg(err?.message));
+		}
 	};
 
 	return (
-		<button
-			onClick={handleCreateGroup}
-			className={`btn-main btn-${size || "med"} btn-clear`}
-		>
-			<span className="icon mg-r-2 d-flx">
-				<AiOutlineAppstoreAdd />
-			</span>
-			<span className="text">{text || "Create Group"}</span>
-		</button>
+		<div className="pos-rel">
+			<button
+				onClick={handleCreateGroup}
+				className={`btn-main btn-${size || "med"} btn-clear`}
+			>
+				<span className="icon mg-r-2 d-flx">
+					<AiOutlineAppstoreAdd />
+				</span>
+				<span className="text">{text || "Create Group"}</span>
+			</button>
+			<div className="loading-center pos-fixed-center mg-t-2">
+				<PulseLoader
+					size={8}
+					loading={loading}
+					color={"rgba(255,255,255,0.3)"}
+				></PulseLoader>
+			</div>
+		</div>
 	);
 };
 

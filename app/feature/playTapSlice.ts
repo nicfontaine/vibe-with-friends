@@ -14,6 +14,9 @@ export const playTapSlice = createSlice({
 			state.id = action.payload.id;
 			state.users = action.payload.users;
 		},
+		deletePlayGroup: () => {
+			return initialState;
+		},
 		setGroupUserPlaying: (state, action) => {
 			const user = state.users.find((u: PlayTapUser) => u.uid === action.payload.uid);
 			if (user) user.playing = action.payload.val;
@@ -23,6 +26,7 @@ export const playTapSlice = createSlice({
 
 export const {
 	setPlayGroup,
+	deletePlayGroup,
 	setGroupUserPlaying,
 } = playTapSlice.actions;
 

@@ -24,6 +24,14 @@ const BtnPlayTap = function ({ setIsTapPlaying, group }: IProps) {
 		btnRef.current?.addEventListener("touchstart", handleTouchStart, { passive: false });
 	}, [btnRef.current]);
 
+	useEffect(() => {
+		if (group?.name) {
+			btnRef.current?.classList.remove("hide");
+		} else {
+			btnRef.current?.classList.add("hide");
+		}
+	}, [group?.name]);
+
 	const playOn = async function () {
 		btnOn();
 		playTapOn({
@@ -71,7 +79,7 @@ const BtnPlayTap = function ({ setIsTapPlaying, group }: IProps) {
 			{group?.name &&
 				<div
 					ref={btnRef}
-					className="btn-tap-play"
+					className="btn-tap-play hide"
 					onMouseDown={handleMouseStart}
 					onMouseUp={handleMouseEnd}
 					onTouchEnd={handleTouchEnd}

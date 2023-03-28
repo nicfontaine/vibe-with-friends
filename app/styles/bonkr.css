@@ -157,6 +157,11 @@ pre > code {
 	top: 50%;
 	transform: translateY(-50%);
 }
+.pos-fixed-center {
+ position: fixed;
+ right: 0;
+ left: 0;
+}
 .pos-abs {
 	position: absolute;
 }

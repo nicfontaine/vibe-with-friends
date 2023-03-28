@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
-import { useDispatch, batch } from "react-redux";
+import { useDispatch } from "react-redux";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import NavMain from "../../components/NavMain";
-import UserNameDialog from "../../components/UserNameDialog";
-import { setDialogUserName } from "../../feature/dialogSlice";
 import { useAppSelector } from "../../app/store";
-import { setPlayGroup, setGroupUserPlaying } from "../../feature/playTapSlice";
+import { setDialogUserName } from "../../feature/dialogSlice";
+import { setPlayGroup, setGroupUserPlaying, deletePlayGroup } from "../../feature/playTapSlice";
 import { setUser } from "../../feature/userSlice";
 import { IRPusherAddUser, IRPusherChangeUserName, IRPusherPlaySync, IRPusherPlayTap } from "../../types/types-pusher-return";
 import { setPlaySyncLoading, setStatusMsg } from "../../feature/statusSlice";
 import VibePlayer from "../../util/vibe-player";
 import { Sheet } from "../../types/types";
+import NavMain from "../../components/NavMain";
+import UserNameDialog from "../../components/UserNameDialog";
 import JoinGroupDialog from "../../components/JoinGroupDialog";
 import UsersGrid from "../../components/UsersGrid";
 import BtnPlayTap from "../../components/BtnPlayTap";
@@ -39,8 +39,10 @@ const GroupPage = function () {
 	const [addGroupUser, { data, loading, error }] = useMutation(ADD_GROUP_USER);
 
 	useEffect(() => {
-		// pusher.unbind();
-		// pusher.unsubscribe(groupStore.name);
+		pusher.unbind();
+		if (gid) {
+			pusher.unsubscribe(gid?.toString());
+		}
 		// pusher.disconnect();
 		return () => {
 			console.log("[gid] unmount");
@@ -65,13 +67,6 @@ const GroupPage = function () {
 			}
 		}
 	}, [userStore.name]);
-
-	if (error) {
-		dispatch(setStatusMsg(error.message));
-		// dispatch(deleteGroup());
-		router.push("/", undefined, { shallow: true });
-		return;
-	}
 	
 	useEffect(() => {
 		if (!data) return;
@@ -114,17 +109,25 @@ const GroupPage = function () {
 	}, [data]);
 
 	const join = async function (gid: string): Promise<void> {
-		addGroupUser({
-			variables: { 
-				groupName: gid,
-				user: userStore,
-			},
-		});
+		try {
+			await addGroupUser({
+				variables: { 
+					groupName: gid,
+					user: userStore,
+				},
+			});
+		} catch (err: any) {
+			dispatch(setStatusMsg(err?.message));
+			dispatch(deletePlayGroup());
+			router.push("/", undefined, { shallow: true });
+		}
 	};
 
 	const player = async (sheet: Sheet): Promise<void> => {
 		await VibePlayer.play(sheet);
 	};
+
+	// if (error) return;
 
 	return (
 		<>
@@ -135,16 +138,16 @@ const GroupPage = function () {
 
 			{loading ? (
 				<>
-					<div className="loading-center mg-t-10">
+					<div className="loading-center pos-abs-center mg-t-10">
 						<PuffLoader color="#aaaaaa" size={70} className="center loading-spinner" />
 					</div>
 				</>
 			) : null}
 
+			<NavMain group={data?.addGroupUser?.group} />
+
 			{data?.addGroupUser?.group ? (
 				<>
-					
-					<NavMain group={data?.addGroupUser?.group} />
 
 					<UsersGrid
 						group={data.addGroupUser.group}

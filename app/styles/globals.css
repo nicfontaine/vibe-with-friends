@@ -463,7 +463,14 @@ code {
 	right: 0;
 	left: 0;
 }
+.btn-tap-play.hide {
+	transform: translateY(100%);
+	opacity: 0;
+}
 .btn-tap-play {
+	transition: all 0.25s;
+	transform: none;
+	opacity: 1;
 	display: flex;
 	align-items: center;
 	justify-content: center;

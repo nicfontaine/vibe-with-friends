@@ -14,7 +14,7 @@ import { Group } from "../types/types";
 import NavGroupCode from "./NavGroupCode";
 
 interface IProps {
-	group: Group
+	group?: Group
 }
 
 const NavMain = function ({ group }: IProps) {

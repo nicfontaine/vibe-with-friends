@@ -6,8 +6,6 @@ import UserNameDialog from "../components/UserNameDialog";
 import NavMain from "../components/NavMain";
 import { useDispatch } from "react-redux";
 import { setDialogJoinGroup } from "../feature/dialogSlice";
-import { deleteGroup } from "../feature/groupSlice";
-import { setUserIsOwner } from "../feature/userSlice";
 import { MdOutlineAddLink } from "react-icons/md";
 import NavigatorDialog from "../components/NavigatorDialog";
 

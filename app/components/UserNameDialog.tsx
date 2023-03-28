@@ -11,7 +11,7 @@ import { Group, GroupUser } from "../types/types";
 
 interface IProps {
 	maxWidth?: number;
-	group: Group | undefined;
+	group?: Group | undefined;
 }
 
 const UserNameDialog = function ({ maxWidth, group }: IProps) {
@@ -51,7 +51,6 @@ const UserNameDialog = function ({ maxWidth, group }: IProps) {
 		const n = userStore.name;
 		const nameInGroup = group?.users?.filter((u: GroupUser) => u.name === n);
 		if (n && group?.name && !nameInGroup) {
-			console.log("updateUserName");
 			updateUserName();
 		}
 	}, [userStore.name]);

@@ -3,6 +3,9 @@ import createGroupID from "../util/create-group-id";
 import { v4 as uuidv4 } from "uuid";
 import { Group, GroupUser, OID } from "../types";
 import { pusher } from "../expr";
+import { GraphQLError } from "graphql";
+import { getGraphQLRateLimiter } from "graphql-rate-limiter";
+const rateLimiter = getGraphQLRateLimiter({ identifyContext: (ctx) => ctx.id });
 
 const resolvers = {
 
@@ -30,7 +33,12 @@ const resolvers = {
 
 	Mutation: {
 
-		async createGroup (_: any, args: any) {
+		async createGroup (parent: any, args: any, context: any, info: any) {
+			const errorMessage = await rateLimiter(
+				{ parent, args, context, info },
+				{ max: 3, window: "10s" },
+			);
+			if (errorMessage) throw new GraphQLError(errorMessage);
 			const { user } = args;
 			const uid: string = user.uid || uuidv4();
 			const group = new GroupModel({
@@ -67,22 +75,25 @@ const resolvers = {
 		async addGroupUser (_: any, args: any) {
 			const { groupName, user } = args;
 			const group = await GroupModel.findOne({ name: groupName });
-			if (group) {
-				// Owner rejoining
-				if (user.uid === group.ownerID) {
-					return { user, group };
-				}
-				const groupUser = group.users.find((e: GroupUser) => e.uid === user.uid);
-				if (!groupUser) {
-					user.uid = user.uid || uuidv4();
-					group.users.push(user);
-					pusher.trigger(group.name, "add-user", {
-						message: group,
-					});
-				}
-				group.lastEvent = Date.now();
-				await group.save();
+			if (!group) {
+				throw new GraphQLError(`Group: ${groupName} not found`, {
+					extensions: { code: "NOT_FOUND" },
+				});
 			}
+			// Owner rejoining
+			if (user.uid === group.ownerID) {
+				return { user, group };
+			}
+			const groupUser = group.users.find((e: GroupUser) => e.uid === user.uid);
+			if (!groupUser) {
+				user.uid = user.uid || uuidv4();
+				group.users.push(user);
+				pusher.trigger(group.name, "add-user", {
+					message: group,
+				});
+			}
+			group.lastEvent = Date.now();
+			await group.save();
 			return { user, group };
 		},
 
