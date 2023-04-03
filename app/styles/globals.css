@@ -468,7 +468,7 @@ code {
 	opacity: 0;
 }
 .btn-tap-play {
-	transition: all 0.25s;
+	transition: transform 0.25s, opacity 0.25s;
 	transform: none;
 	opacity: 1;
 	display: flex;
